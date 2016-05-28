@@ -1,0 +1,30 @@
+#ifndef GLOBALS_H
+#define GLOBALS_H
+
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+namespace Global
+{
+	const float ROT_SCALE = 50.0f;
+	const float WIDEN_SCALE = 0.1f;
+	const float XY_TRANS_SCALE = 12.0f;
+
+	const char* const WINDOW_TITLE = "Final Project";
+	const int WINDOW_WIDTH_INIT = 640;
+	const int WINDOW_HEIGHT_INIT = 480;
+
+	//initial camera properties
+	const float EYE_Z_DIST = 30.0f;
+	const glm::vec3 cam_pos_init(0.0f, 0.0f, EYE_Z_DIST);// e  | Position of camera
+	const glm::vec3 cam_look_at_init(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
+	const glm::vec3 cam_up_init(0.0f, 1.0f, 0.0f);		// up | What orientation "up" is
+
+	//properties for objects in scene -- chrome
+	const glm::vec3 objAmbient = glm::vec3(0.25f, 0.25f, 0.25f);
+	const glm::vec3 objDiffuse = glm::vec3(0.4f, 0.4f, 0.4f);
+	const glm::vec3 objSpecular = glm::vec3(0.774597f, 0.774597f, 0.774597f);
+	const GLfloat objShininess = 0.5f * 128.0f;
+};
+
+#endif
