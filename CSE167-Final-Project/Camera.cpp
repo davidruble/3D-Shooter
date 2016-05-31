@@ -17,27 +17,68 @@ Camera::~Camera()
 
 }
 
-void Camera::update(CamTransform transop, float x, float y, float z)
+void Camera::update(CamMoveDir moveDir, float horizAngle, float vertAngle, float deltaTime)
 {
-	//TODO
-	switch (transop)
+	//calculate the new direction
+	this->d = glm::vec3(
+		glm::cos(vertAngle) * glm::sin(horizAngle),
+		glm::sin(vertAngle),
+		glm::cos(vertAngle) * glm::cos(horizAngle)
+	);
+
+	//calculate right vector
+	glm::vec3 rightVec = glm::vec3(
+		glm::sin(horizAngle - (glm::pi<float>() / 2.0f)),
+		0.0f,
+		glm::cos(horizAngle - (glm::pi<float>() / 2.0f))
+	);
+
+	//update the camera
+	look(rightVec);
+	move(moveDir, rightVec, deltaTime);
+}
+
+void Camera::move(CamMoveDir moveDir, glm::vec3 rightVec, float deltaTime)
+{
+	switch (moveDir)
 	{
-	//move the camera in xyz
-	case C_MOVE:
+	//move forward
+	case C_FORWARD:
+		this->e.x += glm::normalize(this->d).x * deltaTime * Global::MOVE_SPEED;
+		this->e.z += glm::normalize(this->d).z * deltaTime * Global::MOVE_SPEED;
 		break;
 
-	//looking around with the mouse
-	case C_LOOK:
+	//move backwards
+	case C_BACKWARD:
+		this->e.x -= glm::normalize(this->d).x * deltaTime * Global::MOVE_SPEED;
+		this->e.z -= glm::normalize(this->d).z * deltaTime * Global::MOVE_SPEED;
 		break;
+
+	//strafe right
+	case C_RIGHT:
+		this->e.x += glm::normalize(rightVec).x * deltaTime * Global::MOVE_SPEED;
+		this->e.z += glm::normalize(rightVec).z * deltaTime * Global::MOVE_SPEED;
+		break;
+
+	//strafe left
+	case C_LEFT:
+		this->e.x -= glm::normalize(rightVec).x * deltaTime * Global::MOVE_SPEED;
+		this->e.z -= glm::normalize(rightVec).z * deltaTime * Global::MOVE_SPEED;
+		break;
+
+	default:
+		return;
 	}
+	
+	//update the camera's view
+	this->view = glm::lookAt(e, e + d, up);
 }
 
-void Camera::move(float x, float y, float z)
+void Camera::look(glm::vec3 rightVec)
 {
+	//calculate the new up vector
+	this->up = glm::cross(rightVec, d);
 
-}
-
-void Camera::look_at()
-{
-
+	//update the camera's view
+	this->view = glm::lookAt(e, e + d, up);
 }

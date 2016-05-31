@@ -9,11 +9,14 @@
 
 #include "Window.h"
 
-enum CamTransform
+
+enum CamMoveDir
 {
 	C_NONE,
-	C_MOVE,
-	C_LOOK
+	C_FORWARD,
+	C_BACKWARD,
+	C_RIGHT,
+	C_LEFT
 };
 
 class Camera
@@ -24,13 +27,14 @@ private:
 	glm::vec3 up;	//orientation "up"
 	glm::mat4 view;	//view matrix (C inverse)
 
+	void move(CamMoveDir moveDir, glm::vec3 rightVec, float deltaTime);
+	void look(glm::vec3 rightVec);
+
 public:
 	Camera(glm::vec3 pos, glm::vec3 lookAt, glm::vec3 up);
 	~Camera();
 
-	void update(CamTransform transop, float x, float y, float z);
-	void move(float x, float y, float z);
-	void look_at(); //TODO
+	void update(CamMoveDir moveDir, float horizAngle, float vertAngle, float deltaTime);
 
 	glm::mat4 getCInv() { return view; }
 };

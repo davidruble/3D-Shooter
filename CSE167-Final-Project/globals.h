@@ -20,6 +20,10 @@ namespace Global
 	const glm::vec3 cam_look_at_init(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
 	const glm::vec3 cam_up_init(0.0f, 1.0f, 0.0f);		// up | What orientation "up" is
 
+	//camera movement properties
+	const float MOVE_SPEED = 7.0f;
+	const float LOOK_SPEED = 0.003f;
+
 	//properties for objects in scene -- chrome
 	const glm::vec3 objAmbient = glm::vec3(0.25f, 0.25f, 0.25f);
 	const glm::vec3 objDiffuse = glm::vec3(0.4f, 0.4f, 0.4f);

@@ -64,18 +64,7 @@ Skybox::Skybox()
 	//unbind the VAO
 	glBindVertexArray(0);
 
-	//get all the faces
-	//faces.push_back("skybox/hw_crater/right.ppm");
-	//faces.push_back("skybox/hw_crater/left.ppm");
-	/*
-	faces.push_back("skybox/hw_crater/left.ppm");
-	faces.push_back("skybox/hw_crater/right.ppm");
-	faces.push_back("skybox/hw_crater/top.ppm");
-	faces.push_back("skybox/hw_crater/bottom.ppm");
-	faces.push_back("skybox/hw_crater/front.ppm");
-	faces.push_back("skybox/hw_crater/back.ppm");
-	*/
-
+	//get all of the faces
 	faces.push_back("skybox/front.ppm");
 	faces.push_back("skybox/back.ppm");
 	faces.push_back("skybox/top.ppm");
@@ -87,7 +76,7 @@ Skybox::Skybox()
 	loadCubemap();
 
 	//make it bigger!
-	scale(500.0f);
+	scale(100.0f);
 }
 
 Skybox::~Skybox()
