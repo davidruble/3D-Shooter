@@ -31,11 +31,12 @@ namespace Global
 	const GLfloat objShininess = 0.5f * 128.0f;
 
 	//particle properties
-	const int MAX_PARTICLES = 1000;
+	const int MAX_PARTICLES = 10000;
 	const int PARTICLES_PER_SECOND = 10000;
-	const float PARTICLE_LIFE = 5.0f;
-	const float PARTICLE_SPREAD = 1.5f;
-	const float PARTICLE_SIZE = 0.1f;
+	const float PARTICLE_LIFE = 2.0f;
+	const float PARTICLE_SPREAD = 5.0f;
+	const float PARTICLE_SIZE = 0.05f;
+	const glm::vec3 camOffset = glm::vec3(0.0f, -0.5f, 0.25f);
 };
 
 #endif

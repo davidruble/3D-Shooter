@@ -55,6 +55,7 @@ public:
 	~ParticleSystem();
 
 	void render(glm::vec3 startPos, glm::vec3 direction);
+	void killParticles();
 };
 
 #endif

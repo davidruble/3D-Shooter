@@ -17,6 +17,13 @@ ParticleSystem::ParticleSystem()
 	this->numParticles = 0;
 	this->lastUsedParticle = 0;
 
+	//initialize the particle values
+	for (int i = 0; i < Global::MAX_PARTICLES; ++i)
+	{
+		particlesContainer[i].life = -1.0f;
+		particlesContainer[i].cameraDistance = -1.0f;
+	}
+
 	//create the vertex buffers/arrays
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &billboard_VBO);
@@ -132,7 +139,7 @@ int ParticleSystem::findUnusedParticle()
 	for (int i = lastUsedParticle; i < Global::MAX_PARTICLES; ++i)
 	{
 		//found an unused particle
-		if (particlesContainer[i].life < 0)
+		if (particlesContainer[i].life < 0.0f)
 		{
 			lastUsedParticle = i;
 			return i;
@@ -143,7 +150,7 @@ int ParticleSystem::findUnusedParticle()
 	for (int i = 0; i < lastUsedParticle; ++i)
 	{
 		//found an unused particle
-		if (particlesContainer[i].life < 0)
+		if (particlesContainer[i].life < 0.0f)
 		{
 			lastUsedParticle = i;
 			return i;
@@ -190,6 +197,7 @@ void ParticleSystem::generateParticles(glm::vec3 startPos, glm::vec3 direction)
 void ParticleSystem::simulateParticles()
 {
 	//simulate all the particles
+	numParticles = 0;
 	for (int i = 0; i < Global::MAX_PARTICLES; ++i)
 	{
 		Particle& p = particlesContainer[i];
@@ -235,4 +243,15 @@ void ParticleSystem::simulateParticles()
 void ParticleSystem::sortParticles()
 {
 	std::sort(&particlesContainer[0], &particlesContainer[Global::MAX_PARTICLES]);
+}
+
+void ParticleSystem::killParticles()
+{
+	//reset all the particles
+	numParticles = 0;
+	for (int i = 0; i < Global::MAX_PARTICLES; ++i)
+	{
+		particlesContainer[i].life = -1.0f;
+		particlesContainer[i].cameraDistance = -1.0f;
+	}
 }

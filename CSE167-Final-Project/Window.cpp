@@ -142,7 +142,6 @@ void Window::idle_callback()
 
 void Window::display_callback(GLFWwindow* window)
 {
-
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -159,8 +158,7 @@ void Window::display_callback(GLFWwindow* window)
 	if (shooting)
 	{
 		particleShader->use();
-		//particleSystem->render(Global::camera->getPos(), Global::camera->getDir());
-		particleSystem->render(glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		particleSystem->render(Global::camera->getPos() + Global::camOffset, (Global::camera->getDir() + Global::camera->getPos()) * -1.0f);
 	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing
@@ -253,6 +251,7 @@ void Window::mouse_button_callback(GLFWwindow* window, int button, int action, i
 	{
 		//TEMPORARY: stop shooting when the button is released
 		shooting = false;
+		particleSystem->killParticles();
 	}
 
 }
