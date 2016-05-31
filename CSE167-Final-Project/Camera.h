@@ -9,7 +9,6 @@
 
 #include "Window.h"
 
-
 enum CamMoveDir
 {
 	C_NONE,
@@ -26,6 +25,7 @@ private:
 	glm::vec3 d;	//look at
 	glm::vec3 up;	//orientation "up"
 	glm::mat4 view;	//view matrix (C inverse)
+	glm::vec3 right; //which way is right
 
 	void move(CamMoveDir moveDir, glm::vec3 rightVec, float deltaTime);
 	void look(glm::vec3 rightVec);
@@ -37,6 +37,10 @@ public:
 	void update(CamMoveDir moveDir, float horizAngle, float vertAngle, float deltaTime);
 
 	glm::mat4 getCInv() { return view; }
+	glm::vec3 getPos() { return e; }
+	glm::vec3 getDir() { return d; }
+	glm::vec3 getUp() { return up; }
+	glm::vec3 getRight() { return right; }
 };
 
 #endif

@@ -29,6 +29,13 @@ namespace Global
 	const glm::vec3 objDiffuse = glm::vec3(0.4f, 0.4f, 0.4f);
 	const glm::vec3 objSpecular = glm::vec3(0.774597f, 0.774597f, 0.774597f);
 	const GLfloat objShininess = 0.5f * 128.0f;
+
+	//particle properties
+	const int MAX_PARTICLES = 1000;
+	const int PARTICLES_PER_SECOND = 10000;
+	const float PARTICLE_LIFE = 5.0f;
+	const float PARTICLE_SPREAD = 1.5f;
+	const float PARTICLE_SIZE = 0.1f;
 };
 
 #endif

@@ -10,6 +10,7 @@ Camera::Camera(glm::vec3 pos, glm::vec3 lookAt, glm::vec3 up)
 	this->d = lookAt;
 	this->up = up;	
 	this->view = glm::lookAt(e, d, up);
+	this->right = glm::cross(d, up);
 }
 
 Camera::~Camera()
@@ -27,15 +28,15 @@ void Camera::update(CamMoveDir moveDir, float horizAngle, float vertAngle, float
 	);
 
 	//calculate right vector
-	glm::vec3 rightVec = glm::vec3(
+	this->right = glm::vec3(
 		glm::sin(horizAngle - (glm::pi<float>() / 2.0f)),
 		0.0f,
 		glm::cos(horizAngle - (glm::pi<float>() / 2.0f))
 	);
 
 	//update the camera
-	look(rightVec);
-	move(moveDir, rightVec, deltaTime);
+	look(right);
+	move(moveDir, right, deltaTime);
 }
 
 void Camera::move(CamMoveDir moveDir, glm::vec3 rightVec, float deltaTime)

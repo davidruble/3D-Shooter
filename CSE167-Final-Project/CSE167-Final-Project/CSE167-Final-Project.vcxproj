@@ -124,6 +124,8 @@
   <ItemGroup>
     <None Include="..\basicShader.frag" />
     <None Include="..\basicShader.vert" />
+    <None Include="..\particle.frag" />
+    <None Include="..\particle.vert" />
     <None Include="..\skybox.frag" />
     <None Include="..\skybox.vert" />
     <None Include="packages.config" />
@@ -134,6 +136,7 @@
     <ClInclude Include="..\globals.h" />
     <ClInclude Include="..\main.h" />
     <ClInclude Include="..\objects.h" />
+    <ClInclude Include="..\ParticleSystem.h" />
     <ClInclude Include="..\ppmLoader.h" />
     <ClInclude Include="..\shader.h" />
     <ClInclude Include="..\skybox.h" />
@@ -143,6 +146,7 @@
     <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\Cube.cpp" />
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\ParticleSystem.cpp" />
     <ClCompile Include="..\ppmLoader.cpp" />
     <ClCompile Include="..\shader.cpp" />
     <ClCompile Include="..\skybox.cpp" />

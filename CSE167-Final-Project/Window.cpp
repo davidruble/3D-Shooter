@@ -5,10 +5,13 @@
 #include "Camera.h"
 #include "shader.h"
 #include "Cube.h"
+#include "ParticleSystem.h"
 
 using Global::skybox;
 using Global::camera;
 using Global::skyboxShader;
+using Global::particleSystem;
+using Global::particleShader;
 
 //window datafields
 int Window::width;
@@ -19,6 +22,8 @@ glm::mat4 Window::P;
 Skybox * Global::skybox;
 Camera * Global::camera;
 Shader * Global::skyboxShader;
+ParticleSystem * Global::particleSystem;
+Shader * Global::particleShader;
 
 //NOTE: for testing
 Shader * basicShader;
@@ -38,25 +43,33 @@ float deltaTime = 0.0f;
 double lastTime = 0.0;
 double currentTime = 0.0;
 
+//render the shooting effect
+bool shooting = false;
+
 void Window::initialize_objects()
 {
 	//for testing
 	basicShader = new Shader("../basicShader.vert", "../basicShader.frag");
 	cube = new Cube();
 
-	// Load the shaders
+	//initialize the particle system and shader
+	particleShader = new Shader("../particle.vert", "../particle.frag");
+	particleSystem = new ParticleSystem();
+
+	// load the skybox and shader
 	skyboxShader = new Shader("../skybox.vert", "../skybox.frag");
-
-	camera = new Camera(Global::cam_pos_init, Global::cam_look_at_init, Global::cam_up_init);
-
-	// Init the skybox
 	skybox = new Skybox();
+
+	//initialize the player camera
+	camera = new Camera(Global::cam_pos_init, Global::cam_look_at_init, Global::cam_up_init);
 }
 
 void Window::clean_up()
 {
 	delete(skybox);
 	delete(skyboxShader);
+	delete(particleSystem);
+	delete(particleShader);
 }
 
 GLFWwindow* Window::create_window(int width, int height)
@@ -123,8 +136,6 @@ void Window::idle_callback()
 	//controlling the camera
 	camera->update(c_moveDir, horizAngle, vertAngle, deltaTime);
 
-	//TODO: update the scene
-
 	//store the last frame time
 	lastTime = currentTime;
 }
@@ -142,6 +153,15 @@ void Window::display_callback(GLFWwindow* window)
 	//render the testing cube
 	basicShader->use();
 	cube->draw(basicShader->getProgram());
+
+	//if shooting, render the particle effect
+	//TODO: end the shooting after a timer has run out
+	if (shooting)
+	{
+		particleShader->use();
+		//particleSystem->render(Global::camera->getPos(), Global::camera->getDir());
+		particleSystem->render(glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
@@ -219,10 +239,11 @@ void Window::mouse_button_callback(GLFWwindow* window, int button, int action, i
 		//determine which button was pressed
 		switch(button)
 		{
-		// TODO: shoot gun on mouse press
 		case GLFW_MOUSE_BUTTON_LEFT:
 			//get the coordinates of where the button was clicked
 			glfwGetCursorPos(window, &mouseX, &mouseY);
+			//start the shooting particle effect
+			shooting = true;
 			break;
 		}
 	}
@@ -230,6 +251,8 @@ void Window::mouse_button_callback(GLFWwindow* window, int button, int action, i
 	//mouse button released
 	else if (action == GLFW_RELEASE)
 	{
+		//TEMPORARY: stop shooting when the button is released
+		shooting = false;
 	}
 
 }
