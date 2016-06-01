@@ -81,53 +81,51 @@ void ParticleSystem::render(glm::vec3 startPos, glm::vec3 direction)
 	glUniformMatrix4fv(viewProjLoc, 1, GL_FALSE, &VP[0][0]);
 
 	glBindVertexArray(VAO);
+		//update the particle positions buffer
+		glBindBuffer(GL_ARRAY_BUFFER, particlesPosition_VBO);
+		glBufferData(GL_ARRAY_BUFFER, Global::MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, numParticles * sizeof(GLfloat) * 4, particle_position_size_data);
 
-	//update the particle positions buffer
-	glBindBuffer(GL_ARRAY_BUFFER, particlesPosition_VBO);
-	glBufferData(GL_ARRAY_BUFFER, Global::MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, numParticles * sizeof(GLfloat) * 4, particle_position_size_data);
+		//update the particle color buffer
+		glBindBuffer(GL_ARRAY_BUFFER, particlesColor_VBO);
+		glBufferData(GL_ARRAY_BUFFER, Global::MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, numParticles * sizeof(GLubyte) * 4, particle_color_data);
 
-	//update the particle color buffer
-	glBindBuffer(GL_ARRAY_BUFFER, particlesColor_VBO);
-	glBufferData(GL_ARRAY_BUFFER, Global::MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, numParticles * sizeof(GLubyte) * 4, particle_color_data);
+		//set the vertex attribute pointers with the new data
+		//vertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, billboard_VBO);
+		glVertexAttribPointer(
+			0, //attribute number in the shader
+			3, //size
+			GL_FLOAT, //type
+			GL_FALSE, //normalized?
+			0, //stride
+			(void*)0 //offset
+		);
 
-	//set the vertex attribute pointers with the new data
-	//vertices
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, billboard_VBO);
-	glVertexAttribPointer(
-		0, //attribute number in the shader
-		3, //size
-		GL_FLOAT, //type
-		GL_FALSE, //normalized?
-		0, //stride
-		(void*)0 //offset
-	);
+		//positions of particles' centers
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, particlesPosition_VBO);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-	//positions of particles' centers
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, particlesPosition_VBO);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		//particles' colors
+		glEnableVertexAttribArray(2);
+		glBindBuffer(GL_ARRAY_BUFFER, particlesColor_VBO);
+		glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
 
-	//particles' colors
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, particlesColor_VBO);
-	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
+		//set the parameters for instanced rendering
+		glVertexAttribDivisor(0, 0); //always reuse same 4 vertices
+		glVertexAttribDivisor(1, 1); //one position per quad (it's center)
+		glVertexAttribDivisor(2, 1); //one color per quad
 
-	//set the parameters for instanced rendering
-	glVertexAttribDivisor(0, 0); //always reuse same 4 vertices
-	glVertexAttribDivisor(1, 1); //one position per quad (it's center)
-	glVertexAttribDivisor(2, 1); //one color per quad
+		//draw the particles
+		glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, numParticles);
 
-	//draw the particles
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, numParticles);
-
-	//NOTE: do these go before or after glBindVertexArray(0)?
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-
+		//unbind the vertex attribute arrays
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 	glBindVertexArray(0);
 }
 
@@ -158,6 +156,7 @@ int ParticleSystem::findUnusedParticle()
 	}
 
 	//all particles are taken, so override the first one
+	lastUsedParticle = 0;
 	return 0;
 }
 
@@ -182,7 +181,9 @@ void ParticleSystem::generateParticles(glm::vec3 startPos, glm::vec3 direction)
 			(rand() % 2000 - 1000.0f) / 1000.0f
 		);
 		particlesContainer[pIndex].speed = direction + randomDir*Global::PARTICLE_SPREAD;
-
+		//glm::vec3 partSpeed = particlesContainer[pIndex].speed;
+		//cerr << "speed: " << "(" << partSpeed.x << ", " << partSpeed.y << ", " << partSpeed.z << ")" << std::endl;
+		
 		//generate a random red color for the particle
 		particlesContainer[pIndex].r = rand() % 256;
 		particlesContainer[pIndex].g = 0;
@@ -198,6 +199,7 @@ void ParticleSystem::simulateParticles()
 {
 	//simulate all the particles
 	numParticles = 0;
+	lastUsedParticle = 0;
 	for (int i = 0; i < Global::MAX_PARTICLES; ++i)
 	{
 		Particle& p = particlesContainer[i];
@@ -210,8 +212,11 @@ void ParticleSystem::simulateParticles()
 			if (p.life > 0.0f)
 			{
 				//move the particle forward
-				p.pos += p.speed * (float)delta;
-				p.cameraDistance = glm::length(p.pos - Global::camera->getPos());
+				if (p.pos.z >= 0)
+					p.pos += (p.speed * (float)delta);
+				if (p.pos.z < 0)
+					p.pos -= (p.speed * (float)delta);
+				p.cameraDistance = glm::abs(glm::length(p.pos - Global::camera->getPos()));
 
 				//fill the position buffer
 				particle_position_size_data[4 * numParticles + 0] = p.pos.x;

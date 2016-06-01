@@ -1,6 +1,7 @@
 #include "window.h"
 #include "globals.h"
 #include "objects.h"
+
 #include "skybox.h"
 #include "Camera.h"
 #include "shader.h"
@@ -155,11 +156,14 @@ void Window::display_callback(GLFWwindow* window)
 
 	//if shooting, render the particle effect
 	//TODO: end the shooting after a timer has run out
+	//TODO: BUG -- when srafeing along x-axis, particle origin shifts left/right, when strafeing along z-azis, particle origin shifts forward/backward
+	//TODO: BUG -- when near origin, particles stop shooting forward and go more up
 	if (shooting)
 	{
 		particleShader->use();
-		particleSystem->render(Global::camera->getPos() + Global::camOffset, (Global::camera->getDir() + Global::camera->getPos()) * -1.0f);
-	}
+		glm::vec3 particleDir = glm::vec3(glm::vec4((Global::camera->getPos() + Global::camera->getDir()) * -1.0f, 0.0f) * Global::camera->getCInv());
+		particleSystem->render(Global::camera->getPos() + Global::camOffset, particleDir);
+	} 
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();

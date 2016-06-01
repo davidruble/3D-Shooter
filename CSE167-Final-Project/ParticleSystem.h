@@ -14,7 +14,7 @@ struct Particle
 {
 	glm::vec3 pos, speed;
 	unsigned char r, g, b, a;
-	float size, angle, weight;
+	float size;
 	float life;
 	float cameraDistance;
 

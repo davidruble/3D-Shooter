@@ -21,14 +21,14 @@ enum CamMoveDir
 class Camera
 {
 private:
-	glm::vec3 e;	//position
-	glm::vec3 d;	//look at
-	glm::vec3 up;	//orientation "up"
-	glm::mat4 view;	//view matrix (C inverse)
+	glm::vec3 e;	 //position
+	glm::vec3 d;	 //look at
+	glm::vec3 up;	 //orientation "up"
+	glm::mat4 view;	 //view matrix (C inverse)
 	glm::vec3 right; //which way is right
 
-	void move(CamMoveDir moveDir, glm::vec3 rightVec, float deltaTime);
-	void look(glm::vec3 rightVec);
+	void move(CamMoveDir moveDir, float deltaTime);
+	void lookAround();
 
 public:
 	Camera(glm::vec3 pos, glm::vec3 lookAt, glm::vec3 up);
