@@ -44,8 +44,8 @@ float deltaTime = 0.0f;
 double lastTime = 0.0;
 double currentTime = 0.0;
 
-//render the shooting effect
-bool shooting = false;
+//keep rendering more particles when true, let old ones die out when false
+bool Global::isFiring = false;
 
 void Window::initialize_objects()
 {
@@ -154,15 +154,10 @@ void Window::display_callback(GLFWwindow* window)
 	basicShader->use();
 	cube->draw(basicShader->getProgram());
 
-	//if shooting, render the particle effect
-	//TODO: end the shooting after a timer has run out
-	if (shooting)
-	{
-		particleShader->use();
-		//glm::vec3 particleDir = glm::vec3(glm::vec4((Global::camera->getPos() + Global::camera->getDir()) * -1.0f, 0.0f) * Global::camera->getCInv());
-		glm::vec3 particleDir = Global::camera->getDir();
-		particleSystem->render(Global::camera->getPos() + Global::camOffset, particleDir);
-	} 
+	//render the shooting particle effect
+	//whether or not to actually render particles (i.e. when shooting) is handled behind the scenes
+	particleShader->use();
+	particleSystem->render(Global::camera->getPos() + Global::camOffset, Global::camera->getDir());
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
@@ -243,8 +238,8 @@ void Window::mouse_button_callback(GLFWwindow* window, int button, int action, i
 		case GLFW_MOUSE_BUTTON_LEFT:
 			//get the coordinates of where the button was clicked
 			glfwGetCursorPos(window, &mouseX, &mouseY);
-			//start the shooting particle effect
-			shooting = true;
+			//start shooting
+			Global::isFiring = true;
 			break;
 		}
 	}
@@ -252,9 +247,9 @@ void Window::mouse_button_callback(GLFWwindow* window, int button, int action, i
 	//mouse button released
 	else if (action == GLFW_RELEASE)
 	{
-		//TEMPORARY: stop shooting when the button is released
-		shooting = false;
-		particleSystem->killParticles();
+		//stop shooting when the button is released
+		Global::isFiring = false;
+		//particleSystem->killParticles();
 	}
 
 }

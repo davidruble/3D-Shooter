@@ -21,7 +21,7 @@ namespace Global
 	const glm::vec3 cam_up_init(0.0f, 1.0f, 0.0f);		// up | What orientation "up" is
 
 	//camera movement properties
-	const float MOVE_SPEED = 7.0f;
+	const float MOVE_SPEED = 5.0f;
 	const float LOOK_SPEED = 0.003f;
 
 	//properties for objects in scene -- chrome
@@ -38,6 +38,7 @@ namespace Global
 	const float PARTICLE_SIZE = 0.02f;
 	const glm::vec3 PARTICLE_SPEED = glm::vec3(10.0f, 10.0f, 10.0f);
 	const glm::vec3 camOffset = glm::vec3(0.0f, -0.25f, 0.0f);
+	extern bool isFiring;
 };
 
 #endif

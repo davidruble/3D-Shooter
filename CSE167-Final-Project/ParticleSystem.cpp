@@ -66,7 +66,10 @@ void ParticleSystem::render(glm::vec3 startPos, glm::vec3 direction)
 	delta = currentTime - lastTime;
 	lastTime = currentTime;
 
-	generateParticles(startPos, direction);
+	//only generate new particles while shooting
+	if (Global::isFiring)
+		generateParticles(startPos, direction);
+
 	simulateParticles();
 
 	//supply the camera right and up vectors to the shader
@@ -180,9 +183,7 @@ void ParticleSystem::generateParticles(glm::vec3 startPos, glm::vec3 direction)
 			(rand() % 2000 - 1000.0f) / 25000.0f,
 			(rand() % 2000 - 1000.0f) / 25000.0f
 		);
-		particlesContainer[pIndex].speed = direction * Global::PARTICLE_SPEED + randomDir*Global::PARTICLE_SPREAD;
-		//glm::vec3 partSpeed = particlesContainer[pIndex].speed;
-		//cerr << "speed: " << "(" << partSpeed.x << ", " << partSpeed.y << ", " << partSpeed.z << ")" << std::endl;
+		particlesContainer[pIndex].speed = direction * Global::PARTICLE_SPEED + randomDir * Global::PARTICLE_SPREAD;
 		
 		//generate a random red color for the particle
 		particlesContainer[pIndex].r = rand() % 256;
