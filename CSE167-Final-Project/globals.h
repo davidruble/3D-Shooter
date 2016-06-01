@@ -36,6 +36,7 @@ namespace Global
 	const float PARTICLE_LIFE = 2.0f;
 	const float PARTICLE_SPREAD = 5.0f;
 	const float PARTICLE_SIZE = 0.02f;
+	const glm::vec3 PARTICLE_SPEED = glm::vec3(10.0f, 10.0f, 10.0f);
 	const glm::vec3 camOffset = glm::vec3(0.0f, -0.25f, 0.0f);
 };
 

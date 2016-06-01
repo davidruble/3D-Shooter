@@ -176,11 +176,11 @@ void ParticleSystem::generateParticles(glm::vec3 startPos, glm::vec3 direction)
 
 		//randomize the particle direction a little bit
 		glm::vec3 randomDir = glm::vec3(
-			(rand() % 2000 - 1000.0f) / 1000.0f,
-			(rand() % 2000 - 1000.0f) / 1000.0f,
-			(rand() % 2000 - 1000.0f) / 1000.0f
+			(rand() % 2000 - 1000.0f) / 25000.0f,
+			(rand() % 2000 - 1000.0f) / 25000.0f,
+			(rand() % 2000 - 1000.0f) / 25000.0f
 		);
-		particlesContainer[pIndex].speed = direction + randomDir*Global::PARTICLE_SPREAD;
+		particlesContainer[pIndex].speed = direction * Global::PARTICLE_SPEED + randomDir*Global::PARTICLE_SPREAD;
 		//glm::vec3 partSpeed = particlesContainer[pIndex].speed;
 		//cerr << "speed: " << "(" << partSpeed.x << ", " << partSpeed.y << ", " << partSpeed.z << ")" << std::endl;
 		
@@ -212,10 +212,7 @@ void ParticleSystem::simulateParticles()
 			if (p.life > 0.0f)
 			{
 				//move the particle forward
-				if (p.pos.z >= 0)
-					p.pos += (p.speed * (float)delta);
-				if (p.pos.z < 0)
-					p.pos -= (p.speed * (float)delta);
+				p.pos += (p.speed * (float)delta);
 				p.cameraDistance = glm::abs(glm::length(p.pos - Global::camera->getPos()));
 
 				//fill the position buffer
@@ -259,4 +256,8 @@ void ParticleSystem::killParticles()
 		particlesContainer[i].life = -1.0f;
 		particlesContainer[i].cameraDistance = -1.0f;
 	}
+
+	//reset the data arrays
+	std::fill(particle_position_size_data, particle_position_size_data + Global::MAX_PARTICLES, 0.0f);
+	std::fill(particle_color_data, particle_color_data + Global::MAX_PARTICLES, 0);
 }
