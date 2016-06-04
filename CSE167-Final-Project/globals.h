@@ -21,7 +21,7 @@ namespace Global
 	const glm::vec3 cam_up_init(0.0f, 1.0f, 0.0f);		// up | What orientation "up" is
 
 	//camera movement properties
-	const float MOVE_SPEED = 5.0f;
+	const float MOVE_SPEED = 4.0f;
 	const float LOOK_SPEED = 0.003f;
 
 	//properties for objects in scene -- chrome
@@ -31,14 +31,23 @@ namespace Global
 	const GLfloat objShininess = 0.5f * 128.0f;
 
 	//particle properties
-	const int MAX_PARTICLES = 1000;
-	const int PARTICLES_PER_SECOND = 2000;
+	const int MAX_PARTICLES = 2000;
+	const int PARTICLES_PER_SECOND = 1000;
 	const float PARTICLE_LIFE = 2.0f;
-	const float PARTICLE_SPREAD = 5.0f;
+	const float PARTICLE_SPREAD = 7.0f;
 	const float PARTICLE_SIZE = 0.02f;
-	const glm::vec3 PARTICLE_SPEED = glm::vec3(10.0f, 10.0f, 10.0f);
+	const glm::vec3 PARTICLE_SPEED = glm::vec3(12.0f, 12.0f, 12.0f);
 	const glm::vec3 camOffset = glm::vec3(0.0f, -0.25f, 0.0f);
 	extern bool isFiring;
+
+	//terrain stuff
+	const float T_SIZE = 800.0f;
+	const int T_VERTEX_COUNT = 128;
+	const int T_IND_VERT_SIZE = T_VERTEX_COUNT * T_VERTEX_COUNT * 3;
+	const int T_TEX_COORD_SIZE = T_VERTEX_COUNT * T_VERTEX_COUNT * 2;
+	const int T_INDS_SIZE = 6 * (T_VERTEX_COUNT - 1) * (T_VERTEX_COUNT - 1);
+	const glm::vec3 terrainScale = glm::vec3(50.0f, 50.0f, 50.0f);
+	const glm::vec3 terrainOffset = glm::vec3(-T_SIZE + 50.0f, -1.0f, -T_SIZE + 50.0f);
 };
 
 #endif

@@ -7,12 +7,16 @@
 #include "shader.h"
 #include "Cube.h"
 #include "ParticleSystem.h"
+#include "Terrain.h"
 
 using Global::skybox;
 using Global::camera;
 using Global::skyboxShader;
 using Global::particleSystem;
 using Global::particleShader;
+using Global::terrain;
+using Global::terrainShader;
+using Global::texture;
 
 //window datafields
 int Window::width;
@@ -25,17 +29,15 @@ Camera * Global::camera;
 Shader * Global::skyboxShader;
 ParticleSystem * Global::particleSystem;
 Shader * Global::particleShader;
+Terrain * Global::terrain;
+Shader * Global::terrainShader;
+Texture * Global::texture;
 
 //NOTE: for testing
 Shader * basicShader;
 Cube * cube;
 
 CamMoveDir c_moveDir;
-
-//last mouse click position
-glm::vec3 lastPos = glm::vec3(0.0f, 0.0f, 0.0f);
-float lastYPos = 0.0f;
-float yDifference = 0.0f;
 
 //camera moving parameters
 double mouseX = 0.0, mouseY = 0.0;
@@ -60,6 +62,13 @@ void Window::initialize_objects()
 	// load the skybox and shader
 	skyboxShader = new Shader("../skybox.vert", "../skybox.frag");
 	skybox = new Skybox();
+
+	//load the terrain and shader
+	terrainShader = new Shader("../terrain.vert", "../terrain.frag");
+	terrain = new Terrain();
+
+	//load the terrain texture
+	texture = new Texture("res/grass.png");
 
 	//initialize the player camera
 	camera = new Camera(Global::cam_pos_init, Global::cam_look_at_init, Global::cam_up_init);
@@ -149,6 +158,10 @@ void Window::display_callback(GLFWwindow* window)
 	//render the skybox
 	skyboxShader->use();
 	skybox->draw(skyboxShader->getProgram());
+
+	//render the terrain
+	terrainShader->use();
+	terrain->render(texture->getTexture());
 
 	//render the testing cube
 	basicShader->use();

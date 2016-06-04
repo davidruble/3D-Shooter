@@ -5,6 +5,8 @@
 #include "Camera.h"
 #include "shader.h"
 #include "ParticleSystem.h"
+#include "Terrain.h"
+#include "Texture.h"
 
 namespace Global
 {
@@ -12,7 +14,10 @@ namespace Global
 	extern Camera * camera;
 	extern Shader * skyboxShader;
 	extern Shader * particleShader;
+	extern Shader * terrainShader;
 	extern ParticleSystem * particleSystem;
+	extern Terrain * terrain;
+	extern Texture * texture;
 }
 
 #endif
