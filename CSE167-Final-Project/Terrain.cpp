@@ -106,14 +106,14 @@ void Terrain::generateTerrain(bool useHeightmap)
 	{
 		for (int j = 0; j < vertexCount; ++j)
 		{
+			glm::vec3 normal = calculateNormal(j, i);
+
 			vertices[v * 3 + 0] = (float)j / ((float)vertexCount - 1) * T_SIZE;
 			vertices[v * 3 + 1] = useHeightmap ? getImageHeight(j, i) : 0.0f;
-			//std::cerr << getImageHeight(j, i) << std::endl;
-			//vertices[v * 3 + 1] = rand() % 5;
 			vertices[v * 3 + 2] = (float)i / ((float)vertexCount - 1) * T_SIZE;
-			normals[v * 3 + 0] = 0.0f;
-			normals[v * 3 + 1] = 1.0f;
-			normals[v * 3 + 2] = 0.0f;
+			normals[v * 3 + 0] = normal.x;
+			normals[v * 3 + 1] = normal.y;
+			normals[v * 3 + 2] = normal.z;
 			textureCoords[v * 2 + 0] = (float)j / ((float)vertexCount - 1);
 			textureCoords[v * 2 + 1] = (float)i / ((float)vertexCount - 1);
 			++v;
@@ -140,18 +140,27 @@ void Terrain::generateTerrain(bool useHeightmap)
 	}
 }
 
+//calculates the new normal for the new height of the terrain at IMAGE position x,z
+glm::vec3 Terrain::calculateNormal(int x, int z)
+{
+	float heightL = getImageHeight(x - 1, z);
+	float heightR = getImageHeight(x + 1, z);
+	float heightD = getImageHeight(x, z - 1);
+	float heightU = getImageHeight(x, z + 1);
+
+	glm::vec3 normal = glm::vec3(heightL - heightR, 2.0f, heightD - heightU);
+	normal = glm::normalize(normal);
+	return normal;
+}
+
 //gets the height of the terrain at the x,z IMAGE coordinate
 float Terrain::getImageHeight(int x, int z)
 {
-	//make sure coords are not out of bounds
-	//if (x < 0 || x > heightmapHeight || z < 0 || z < heightmapHeight)
-	//{
-	//	std::cerr << "Out of bounds!" << std::endl;
-	//	return 0;
-	//}
+	//make sure the values are within the buffer bounds
+	if (x < 0 || z < 0 || x > heightmapHeight * heightmapWidth || z > heightmapHeight * heightmapWidth)
+		return 0.0f;
 
 	float height = (float)getRGB(x, z);
-	//std::cerr << height << std::endl;
 	height += Global::T_MAX_PIXEL_COLOR / 2.0f;
 	height /= Global::T_MAX_PIXEL_COLOR / 2.0f;
 	height *= Global::T_MAX_HEIGHT;
@@ -186,6 +195,16 @@ void Terrain::render(GLuint textureID)
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &toWorld[0][0]);
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &Global::camera->getCInv()[0][0]);
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, &Window::P[0][0]);
+
+	//supply the shader with light properties
+	GLuint lightPosLoc = glGetUniformLocation(shaderProgram, "lightPosition");
+	GLuint lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
+	GLuint shineDamperLoc = glGetUniformLocation(shaderProgram, "shineDamper");
+	GLuint reflectivityLoc = glGetUniformLocation(shaderProgram, "reflectivity");
+	glUniform3fv(lightPosLoc, 1, &Global::sun->getPosition()[0]);
+	glUniform3fv(lightColorLoc, 1, &Global::sun->getColor()[0]);
+	glUniform1f(shineDamperLoc, Global::t_shineDamper);
+	glUniform1f(reflectivityLoc, Global::t_reflectivity);
 
 	//bind the texture
 	glActiveTexture(GL_TEXTURE0);

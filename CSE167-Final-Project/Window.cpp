@@ -2,12 +2,7 @@
 #include "globals.h"
 #include "objects.h"
 
-#include "skybox.h"
-#include "Camera.h"
-#include "shader.h"
 #include "Cube.h"
-#include "ParticleSystem.h"
-#include "Terrain.h"
 
 using Global::skybox;
 using Global::camera;
@@ -17,6 +12,7 @@ using Global::particleShader;
 using Global::terrain;
 using Global::terrainShader;
 using Global::texture;
+using Global::sun;
 
 //window datafields
 int Window::width;
@@ -32,6 +28,7 @@ Shader * Global::particleShader;
 Terrain * Global::terrain;
 Shader * Global::terrainShader;
 Texture * Global::texture;
+Light * Global::sun;
 
 //NOTE: for testing
 Shader * basicShader;
@@ -69,6 +66,9 @@ void Window::initialize_objects()
 
 	//load the terrain texture
 	texture = new Texture("res/grass.png");
+
+	//let there be light!
+	sun = new Light(Global::lightPosition, Global::lightColor);
 
 	//initialize the player camera
 	camera = new Camera(Global::cam_pos_init, Global::cam_look_at_init, Global::cam_up_init);

@@ -33,6 +33,7 @@ private:
 	unsigned char* heightmap;
 
 	void generateTerrain(bool useHeightmap);
+	glm::vec3 calculateNormal(int x, int z);
 	float getImageHeight(int x, int z);
 	int getRGB(int x, int z);
 

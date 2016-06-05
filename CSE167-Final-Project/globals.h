@@ -40,6 +40,10 @@ namespace Global
 	const glm::vec3 camOffset = glm::vec3(0.0f, -0.25f, 0.0f);
 	extern bool isFiring;
 
+	//light properties
+	const glm::vec3 lightPosition = glm::vec3(-100000.0f, 200000.0f, 0.0f);
+	const glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
 	//terrain stuff
 	const float T_SIZE = 500.0f;
 	const float T_MAX_HEIGHT = 40.0f;
@@ -48,6 +52,8 @@ namespace Global
 	const float T_SCALE_VAL = 20.0f;
 	const glm::vec3 terrainScale = glm::vec3(T_SCALE_VAL, T_SCALE_VAL, T_SCALE_VAL);
 	const glm::vec3 terrainOffset = glm::vec3(-(glm::sqrt(T_SIZE) * T_SCALE_VAL - glm::sqrt(T_SIZE)) / 2.0f, -(T_MAX_HEIGHT + T_SCALE_VAL), -(glm::sqrt(T_SIZE) * T_SCALE_VAL - glm::sqrt(T_SIZE)) / 2.0f);
+	const float t_shineDamper = 1.0f;
+	const float t_reflectivity = 0.0f;
 };
 
 #endif
