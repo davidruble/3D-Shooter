@@ -1,39 +1,49 @@
 #include "Terrain.h"
 #include "objects.h"
+#include "globals.h"
 
 using Global::T_VERTEX_COUNT;
 using Global::T_SIZE;
+using Global::terrainTextureController;
+using Global::terrainHeightGenerator;
 
 int T_IND_VERT_SIZE;
 int T_TEX_COORD_SIZE;
 int T_INDS_SIZE;
 
-Terrain::Terrain(bool useHeightmap, const char* heightmapImage)
+bool Global::useHeightmap = false;
+
+TerrainHeightGenerator * Global::terrainHeightGenerator;
+TerrainTextureController * Global::terrainTextureController;
+
+Terrain::Terrain(const char* heightmapImage)
 {
+	//initialize the texture controller with the grass texture set
+	terrainTextureController = new TerrainTextureController(GRASS);
+	terrainHeightGenerator = new TerrainHeightGenerator();
+
 	this->shaderProgram = Global::terrainShader->getProgram();
 	this->toWorld = glm::scale(Global::terrainScale);
 	this->toWorld = glm::translate(glm::mat4(1.0f), Global::terrainOffset);
 
-	//load the heightmap (if applicable)
-	if (useHeightmap)
-	{
-		heightmap = loadPPM(heightmapImage, heightmapWidth, heightmapHeight);
-		vertexCount = heightmapHeight;
+	//load the heightmap
+	heightmap = loadPPM(heightmapImage, heightmapWidth, heightmapHeight);
 
-		//if image not loaded correctly, default to flat
-		if (heightmap == NULL)
-		{
-			std::cerr << "Defaulting to flat terrain" << std::endl;
-			vertexCount = Global::T_VERTEX_COUNT;
-			useHeightmap = false;
-		}
-	}
-	else
+	//if image not loaded correctly, default to flat
+	if (heightmap == NULL)
 	{
+		std::cerr << "Defaulting to flat terrain" << std::endl;
 		vertexCount = Global::T_VERTEX_COUNT;
+		Global::useHeightmap = false;
 	}
 
-	//set the sizes of the buffers based on the vertex count
+	/*if (Global::useHeightmap)
+		vertexCount = heightmapHeight;
+	else
+		vertexCount = Global::T_VERTEX_COUNT;
+		*/
+
+	/*//set the sizes of the buffers based on the vertex count
 	T_IND_VERT_SIZE = vertexCount * vertexCount * 3;
 	T_TEX_COORD_SIZE = vertexCount * vertexCount * 2;
 	T_INDS_SIZE = 6 * (vertexCount - 1) * (vertexCount - 1);
@@ -44,8 +54,8 @@ Terrain::Terrain(bool useHeightmap, const char* heightmapImage)
 	this->normals = new float[T_IND_VERT_SIZE];
 	this->textureCoords = new float[T_TEX_COORD_SIZE];
 	this->indices = new int[T_INDS_SIZE];
-
-	generateTerrain(useHeightmap);
+	*/
+	generateTerrain();
 
 	//create the vertex buffers/arrays
 	glGenVertexArrays(1, &VAO);
@@ -96,10 +106,38 @@ Terrain::~Terrain()
 	delete[] vertices;
 	delete[] textureCoords;
 	delete[] normals;
+	delete terrainTextureController;
+	delete terrainHeightGenerator;
 }
 
-void Terrain::generateTerrain(bool useHeightmap)
+void Terrain::generateTerrain()
 {
+	if (Global::useHeightmap)
+	{
+		vertexCount = heightmapHeight;
+	}
+	else
+	{
+		vertexCount = T_VERTEX_COUNT;
+		Global::terrainHeightGenerator->reseed();
+	}
+
+	//set the sizes of the buffers based on the vertex count
+	T_IND_VERT_SIZE = vertexCount * vertexCount * 3;
+	T_TEX_COORD_SIZE = vertexCount * vertexCount * 2;
+	T_INDS_SIZE = 6 * (vertexCount - 1) * (vertexCount - 1);
+
+	//initialize the data buffers
+	delete[] indices;
+	delete[] vertices;
+	delete[] textureCoords;
+	delete[] normals;
+	int count = vertexCount * vertexCount;
+	this->vertices = new float[T_IND_VERT_SIZE];
+	this->normals = new float[T_IND_VERT_SIZE];
+	this->textureCoords = new float[T_TEX_COORD_SIZE];
+	this->indices = new int[T_INDS_SIZE];
+
 	//initialize the vertices, normals, and texture coords
 	int v = 0;
 	for (int i = 0; i < vertexCount; ++i)
@@ -109,7 +147,7 @@ void Terrain::generateTerrain(bool useHeightmap)
 			glm::vec3 normal = calculateNormal(j, i);
 
 			vertices[v * 3 + 0] = (float)j / ((float)vertexCount - 1) * T_SIZE;
-			vertices[v * 3 + 1] = useHeightmap ? getImageHeight(j, i) : 0.0f;
+			vertices[v * 3 + 1] = getHeight(j, i);
 			vertices[v * 3 + 2] = (float)i / ((float)vertexCount - 1) * T_SIZE;
 			normals[v * 3 + 0] = normal.x;
 			normals[v * 3 + 1] = normal.y;
@@ -143,10 +181,10 @@ void Terrain::generateTerrain(bool useHeightmap)
 //calculates the new normal for the new height of the terrain at IMAGE position x,z
 glm::vec3 Terrain::calculateNormal(int x, int z)
 {
-	float heightL = getImageHeight(x - 1, z);
-	float heightR = getImageHeight(x + 1, z);
-	float heightD = getImageHeight(x, z - 1);
-	float heightU = getImageHeight(x, z + 1);
+	float heightL = getHeight(x - 1, z);
+	float heightR = getHeight(x + 1, z);
+	float heightD = getHeight(x, z - 1);
+	float heightU = getHeight(x, z + 1);
 
 	glm::vec3 normal = glm::vec3(heightL - heightR, 2.0f, heightD - heightU);
 	normal = glm::normalize(normal);
@@ -154,17 +192,27 @@ glm::vec3 Terrain::calculateNormal(int x, int z)
 }
 
 //gets the height of the terrain at the x,z IMAGE coordinate
-float Terrain::getImageHeight(int x, int z)
+float Terrain::getHeight(int x, int z)
 {
-	//make sure the values are within the buffer bounds
-	if (x < 0 || z < 0 || x > heightmapHeight * heightmapWidth || z > heightmapHeight * heightmapWidth)
-		return 0.0f;
+	if (Global::useHeightmap)
+	{
+		//get the height from the heightmap
+		if (x < 0 || z < 0 || x > heightmapHeight * heightmapWidth || z > heightmapHeight * heightmapWidth)
+			return 0.0f;
 
-	float height = (float)getRGB(x, z);
-	height += Global::T_MAX_PIXEL_COLOR / 2.0f;
-	height /= Global::T_MAX_PIXEL_COLOR / 2.0f;
-	height *= Global::T_MAX_HEIGHT;
-	return height;
+		float height = (float)getRGB(x, z);
+		height += Global::T_MAX_PIXEL_COLOR / 2.0f;
+		height /= Global::T_MAX_PIXEL_COLOR / 2.0f;
+		height *= Global::T_MAX_HEIGHT;
+		return height;
+	}
+
+	//otherwise, generate a random height
+	else
+	{
+		return Global::terrainHeightGenerator->generateHeight(x, z);
+	}
+
 }
 
 //gets the RGB value as a single int at coordinate (x, z) of the IMAGE
@@ -221,6 +269,31 @@ void Terrain::render()
 
 	//draw the terrain
 	glBindVertexArray(VAO);
+		//rebind the indices buffer
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, inds_EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * T_INDS_SIZE, indices, GL_STATIC_DRAW);
+
+		//rebind the vertices buffer
+		glBindBuffer(GL_ARRAY_BUFFER, verts_VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * T_IND_VERT_SIZE, vertices, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		//rebind the texture coords buffer
+		glBindBuffer(GL_ARRAY_BUFFER, textCoords_VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoords) * T_TEX_COORD_SIZE, textureCoords, GL_STATIC_DRAW);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		//rebind the normals buffer
+		glBindBuffer(GL_ARRAY_BUFFER, norms_VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(normals) * T_IND_VERT_SIZE, normals, GL_STATIC_DRAW);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+		glEnableVertexAttribArray(2);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 		glDrawElements(GL_TRIANGLES, T_INDS_SIZE, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }

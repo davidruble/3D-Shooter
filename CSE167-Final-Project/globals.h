@@ -59,6 +59,13 @@ namespace Global
 	const char* const GRASS_LOW_IMG = "res/grass_low.png";
 	const char* const GRASS_MID_IMG = "res/grass_med.png";
 	const char* const GRASS_HIGH_IMG = "res/grass_high.png";
+	//TODO: other textures
+
+	//terrain height generator stuff
+	extern bool useHeightmap;
+	const float HEIGHT_AMPLITUDE = 50.0f;
+	const int OCTAVES = 3;
+	const float TERRAIN_ROUGHNESS = 0.3f;
 };
 
 #endif

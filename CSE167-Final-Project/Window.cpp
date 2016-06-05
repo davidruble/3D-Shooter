@@ -12,7 +12,6 @@ using Global::particleShader;
 using Global::terrain;
 using Global::terrainShader;
 using Global::sun;
-using Global::terrainTextureController;
 
 //window datafields
 int Window::width;
@@ -28,8 +27,6 @@ Shader * Global::particleShader;
 Terrain * Global::terrain;
 Shader * Global::terrainShader;
 Light * Global::sun;
-TerrainTextureController * Global::terrainTextureController;
-
 CamMoveDir c_moveDir;
 
 //camera moving parameters
@@ -54,10 +51,7 @@ void Window::initialize_objects()
 
 	//load the terrain and shader, and set the terrain to initially use the SD heightmap
 	terrainShader = new Shader("../terrain.vert", "../terrain.frag");
-	terrain = new Terrain(true, "res/SanDiegoTerrain.ppm");
-
-	//initialize the texture controller with the grass texture set
-	terrainTextureController = new TerrainTextureController(GRASS);
+	terrain = new Terrain("res/SanDiegoTerrain.ppm");
 
 	//let there be light!
 	sun = new Light(Global::lightPosition, Global::lightColor);
@@ -75,7 +69,6 @@ void Window::clean_up()
 	delete(terrain);
 	delete(terrainShader);
 	delete(sun);
-	delete(terrainTextureController);
 }
 
 GLFWwindow* Window::create_window(int width, int height)
@@ -207,21 +200,31 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 
 
 		//////// REFORMAT THE TERRAIN ////////
-			//TODO: make it procedurally change when the button is press (not just texture)
 		//grass
 		case GLFW_KEY_1:
-			terrainTextureController->setTextures(GRASS);
+			Global::useHeightmap = false;
+			Global::terrainTextureController->setTextures(GRASS);
+			terrain->generateTerrain();
 			break;
 
 		//desert
 		case GLFW_KEY_2:
-			terrainTextureController->setTextures(DESERT);
+			Global::useHeightmap = false;
+			Global::terrainTextureController->setTextures(DESERT);
+			terrain->generateTerrain();
 			break;
 
 		//snow
 		case GLFW_KEY_3:
-			terrainTextureController->setTextures(SNOW);
+			Global::useHeightmap = false;
+			Global::terrainTextureController->setTextures(SNOW);
+			terrain->generateTerrain();
 			break;
+
+		//go back to using heightmap
+		case GLFW_KEY_H:
+			Global::useHeightmap = true;
+			terrain->generateTerrain();
 
 		default:
 			std::cerr << "Unmapped key press" << std::endl;
@@ -273,7 +276,6 @@ void Window::mouse_button_callback(GLFWwindow* window, int button, int action, i
 	{
 		//stop shooting when the button is released
 		Global::isFiring = false;
-		//particleSystem->killParticles();
 	}
 
 }

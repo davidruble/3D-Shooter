@@ -71,18 +71,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(SolutionDir)\packages\SOIL\src;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\packages\SOIL\lib;$(LibraryPath)</LibraryPath>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(SolutionDir)\packages\SOIL\src;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\packages\SOIL\lib;$(LibraryPath)</LibraryPath>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)\packages\SOIL\src;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\packages\SOIL\lib;$(LibraryPath)</LibraryPath>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)\packages\SOIL\src;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\packages\SOIL\lib;$(LibraryPath)</LibraryPath>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -167,6 +171,7 @@
     <ClInclude Include="..\shader.h" />
     <ClInclude Include="..\skybox.h" />
     <ClInclude Include="..\Terrain.h" />
+    <ClInclude Include="..\TerrainHeightGenerator.h" />
     <ClInclude Include="..\TerrainTextureController.h" />
     <ClInclude Include="..\Texture.h" />
     <ClInclude Include="..\Window.h" />
@@ -180,6 +185,7 @@
     <ClCompile Include="..\shader.cpp" />
     <ClCompile Include="..\skybox.cpp" />
     <ClCompile Include="..\Terrain.cpp" />
+    <ClCompile Include="..\TerrainHeightGenerator.cpp" />
     <ClCompile Include="..\TerrainTextureController.cpp" />
     <ClCompile Include="..\Texture.cpp" />
     <ClCompile Include="..\Window.cpp" />

@@ -8,6 +8,7 @@
 #include "Terrain.h"
 #include "Light.h"
 #include "TerrainTextureController.h"
+#include "TerrainHeightGenerator.h"
 
 namespace Global
 {
@@ -19,6 +20,7 @@ namespace Global
 	extern ParticleSystem * particleSystem;
 	extern Terrain * terrain;
 	extern TerrainTextureController * terrainTextureController;
+	extern TerrainHeightGenerator * terrainHeightGenerator;
 	extern Light * sun;
 }
 
