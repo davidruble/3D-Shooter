@@ -14,12 +14,6 @@ namespace Global
 	const int WINDOW_WIDTH_INIT = 640;
 	const int WINDOW_HEIGHT_INIT = 480;
 
-	//initial camera properties
-	const float EYE_Z_DIST = 30.0f;
-	const glm::vec3 cam_pos_init(0.0f, 0.0f, EYE_Z_DIST);// e  | Position of camera
-	const glm::vec3 cam_look_at_init(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
-	const glm::vec3 cam_up_init(0.0f, 1.0f, 0.0f);		// up | What orientation "up" is
-
 	//camera movement properties
 	const float MOVE_SPEED = 4.0f;
 	const float LOOK_SPEED = 0.003f;
@@ -46,13 +40,14 @@ namespace Global
 	const glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	//terrain stuff
-	const float T_SIZE = 250.0f;
+	const float T_SIZE = 150.0f;
 	const float T_MAX_HEIGHT = 40.0f;
 	const float T_MAX_PIXEL_COLOR = 256.0f * 256.0f * 256.0f;
 	const int T_VERTEX_COUNT = 128;
 	const float T_SCALE_VAL = 20.0f;
+	const float T_TRANS_VAL = -(glm::sqrt(T_SIZE) * T_SCALE_VAL - glm::sqrt(T_SIZE)) / 2.0f;
 	const glm::vec3 terrainScale = glm::vec3(T_SCALE_VAL, T_SCALE_VAL, T_SCALE_VAL);
-	const glm::vec3 terrainOffset = glm::vec3(-(glm::sqrt(T_SIZE) * T_SCALE_VAL - glm::sqrt(T_SIZE)) / 2.0f, -(T_MAX_HEIGHT + T_SCALE_VAL), -(glm::sqrt(T_SIZE) * T_SCALE_VAL - glm::sqrt(T_SIZE)) / 2.0f);
+	const glm::vec3 terrainOffset = glm::vec3(T_TRANS_VAL, -(T_MAX_HEIGHT + T_SCALE_VAL), T_TRANS_VAL);
 	const float t_shineDamper = 1.0f;
 	const float t_reflectivity = 0.0f;
 
@@ -64,9 +59,15 @@ namespace Global
 
 	//terrain height generator stuff
 	extern bool useHeightmap;
-	const float HEIGHT_AMPLITUDE = 50.0f;
-	const int OCTAVES = 3;
-	const float TERRAIN_ROUGHNESS = 0.3f;
+	const float HEIGHT_AMPLITUDE = 40.0f;
+	const int OCTAVES = 4;
+	const float TERRAIN_ROUGHNESS = 0.4f;
+
+	//initial camera properties
+	const float EYE_Z_DIST = 30.0f;
+	const glm::vec3 cam_pos_init(T_TRANS_VAL / 2.0f, 0.0f, T_TRANS_VAL / 2.0f);// e  | Position of camera
+	const glm::vec3 cam_look_at_init(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
+	const glm::vec3 cam_up_init(0.0f, 1.0f, 0.0f);		// up | What orientation "up" is
 };
 
 #endif

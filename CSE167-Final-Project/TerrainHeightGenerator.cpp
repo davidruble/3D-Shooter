@@ -28,10 +28,8 @@ float TerrainHeightGenerator::getInterpolatedNoise(float x, float z)
 	float v3 = getSmoothNoise(x, z + 1);
 	float v4 = getSmoothNoise(x + 1, z + 1);
 
-	//float i1 = interpolate(v1, v2, (float)(x - (long)x));
-	//float i2 = interpolate(v3, v4, (float)(x - (long)x));
-	float i1 = interpolate(v1, v2, x);
-	float i2 = interpolate(v3, v4, x);
+	float i1 = interpolate(v1, v2, (float)(x - (long)x));
+	float i2 = interpolate(v3, v4, (float)(x - (long)x));
 	
 	return interpolate(i1, i2, (float)(z -(long)z));
 }
