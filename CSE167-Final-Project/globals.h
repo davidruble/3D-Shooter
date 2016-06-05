@@ -23,6 +23,7 @@ namespace Global
 	//camera movement properties
 	const float MOVE_SPEED = 4.0f;
 	const float LOOK_SPEED = 0.003f;
+	const float VERTICAL_CLAMP = 0.9f;
 
 	//properties for objects in scene -- chrome
 	const glm::vec3 objAmbient = glm::vec3(0.25f, 0.25f, 0.25f);
@@ -45,7 +46,7 @@ namespace Global
 	const glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	//terrain stuff
-	const float T_SIZE = 500.0f;
+	const float T_SIZE = 250.0f;
 	const float T_MAX_HEIGHT = 40.0f;
 	const float T_MAX_PIXEL_COLOR = 256.0f * 256.0f * 256.0f;
 	const int T_VERTEX_COUNT = 128;

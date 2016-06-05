@@ -11,7 +11,7 @@ int T_IND_VERT_SIZE;
 int T_TEX_COORD_SIZE;
 int T_INDS_SIZE;
 
-bool Global::useHeightmap = false;
+bool Global::useHeightmap = true;
 
 TerrainHeightGenerator * Global::terrainHeightGenerator;
 TerrainTextureController * Global::terrainTextureController;
@@ -37,24 +37,6 @@ Terrain::Terrain(const char* heightmapImage)
 		Global::useHeightmap = false;
 	}
 
-	/*if (Global::useHeightmap)
-		vertexCount = heightmapHeight;
-	else
-		vertexCount = Global::T_VERTEX_COUNT;
-		*/
-
-	/*//set the sizes of the buffers based on the vertex count
-	T_IND_VERT_SIZE = vertexCount * vertexCount * 3;
-	T_TEX_COORD_SIZE = vertexCount * vertexCount * 2;
-	T_INDS_SIZE = 6 * (vertexCount - 1) * (vertexCount - 1);
-
-	//initialize the data buffers
-	int count = vertexCount * vertexCount;
-	this->vertices = new float[T_IND_VERT_SIZE];
-	this->normals = new float[T_IND_VERT_SIZE];
-	this->textureCoords = new float[T_TEX_COORD_SIZE];
-	this->indices = new int[T_INDS_SIZE];
-	*/
 	generateTerrain();
 
 	//create the vertex buffers/arrays

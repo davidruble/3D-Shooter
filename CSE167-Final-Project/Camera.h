@@ -34,7 +34,7 @@ public:
 	Camera(glm::vec3 pos, glm::vec3 lookAt, glm::vec3 up);
 	~Camera();
 
-	void update(CamMoveDir moveDir, float horizAngle, float vertAngle, float deltaTime);
+	void update(CamMoveDir moveDir, float &horizAngle, float &vertAngle, float deltaTime);
 
 	glm::mat4 getCInv() { return view; }
 	glm::vec3 getPos() { return e; }

@@ -18,8 +18,14 @@ Camera::~Camera()
 
 }
 
-void Camera::update(CamMoveDir moveDir, float horizAngle, float vertAngle, float deltaTime)
+void Camera::update(CamMoveDir moveDir, float &horizAngle, float &vertAngle, float deltaTime)
 {
+	//clamp the vertical looking angle
+	if (vertAngle > Global::VERTICAL_CLAMP)
+		vertAngle = Global::VERTICAL_CLAMP;
+	else if (vertAngle < -Global::VERTICAL_CLAMP)
+		vertAngle = -Global::VERTICAL_CLAMP;
+
 	//calculate the new direction
 	this->d = glm::vec3(
 		glm::cos(vertAngle) * glm::sin(horizAngle),
