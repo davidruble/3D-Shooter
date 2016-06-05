@@ -186,7 +186,7 @@ int Terrain::getRGB(int x, int z)
 	}
 }
 
-void Terrain::render(GLuint textureID)
+void Terrain::render()
 {
 	//supply the model, view, and projection matrices to the shader
 	GLuint modelLoc = glGetUniformLocation(shaderProgram, "model");
@@ -206,10 +206,18 @@ void Terrain::render(GLuint textureID)
 	glUniform1f(shineDamperLoc, Global::t_shineDamper);
 	glUniform1f(reflectivityLoc, Global::t_reflectivity);
 
-	//bind the texture
+	//bind the textures
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glUniform1i(glGetUniformLocation(shaderProgram, "modelTexture"), 0);
+	glBindTexture(GL_TEXTURE_2D, Global::terrainTextureController->getLowID());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, Global::terrainTextureController->getMidID());
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, Global::terrainTextureController->getHighID());
+
+	//pass the terrain textures to the shader
+	glUniform1i(glGetUniformLocation(shaderProgram, "lowTexture"), 0);
+	glUniform1i(glGetUniformLocation(shaderProgram, "midTexture"), 1);
+	glUniform1i(glGetUniformLocation(shaderProgram, "highTexture"), 2);
 
 	//draw the terrain
 	glBindVertexArray(VAO);

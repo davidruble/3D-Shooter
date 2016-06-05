@@ -41,7 +41,7 @@ public:
 	Terrain(bool useHeightmap, const char* heightmapImage);
 	~Terrain();
 
-	void render(GLuint textureID);
+	void render();
 };
 
 #endif

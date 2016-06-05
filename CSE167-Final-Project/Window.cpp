@@ -11,8 +11,8 @@ using Global::particleSystem;
 using Global::particleShader;
 using Global::terrain;
 using Global::terrainShader;
-using Global::texture;
 using Global::sun;
+using Global::terrainTextureController;
 
 //window datafields
 int Window::width;
@@ -27,12 +27,8 @@ ParticleSystem * Global::particleSystem;
 Shader * Global::particleShader;
 Terrain * Global::terrain;
 Shader * Global::terrainShader;
-Texture * Global::texture;
 Light * Global::sun;
-
-//NOTE: for testing
-Shader * basicShader;
-Cube * cube;
+TerrainTextureController * Global::terrainTextureController;
 
 CamMoveDir c_moveDir;
 
@@ -48,10 +44,6 @@ bool Global::isFiring = false;
 
 void Window::initialize_objects()
 {
-	//for testing
-	basicShader = new Shader("../basicShader.vert", "../basicShader.frag");
-	cube = new Cube();
-
 	//initialize the particle system and shader
 	particleShader = new Shader("../particle.vert", "../particle.frag");
 	particleSystem = new ParticleSystem();
@@ -64,8 +56,8 @@ void Window::initialize_objects()
 	terrainShader = new Shader("../terrain.vert", "../terrain.frag");
 	terrain = new Terrain(true, "res/SanDiegoTerrain.ppm");
 
-	//load the terrain texture
-	texture = new Texture("res/grass.png");
+	//initialize the texture controller with the grass texture set
+	terrainTextureController = new TerrainTextureController(GRASS);
 
 	//let there be light!
 	sun = new Light(Global::lightPosition, Global::lightColor);
@@ -80,6 +72,10 @@ void Window::clean_up()
 	delete(skyboxShader);
 	delete(particleSystem);
 	delete(particleShader);
+	delete(terrain);
+	delete(terrainShader);
+	delete(sun);
+	delete(terrainTextureController);
 }
 
 GLFWwindow* Window::create_window(int width, int height)
@@ -161,11 +157,7 @@ void Window::display_callback(GLFWwindow* window)
 
 	//render the terrain
 	terrainShader->use();
-	terrain->render(texture->getTexture());
-
-	//render the testing cube
-	basicShader->use();
-	cube->draw(basicShader->getProgram());
+	terrain->render();
 
 	//render the shooting particle effect
 	//whether or not to actually render particles (i.e. when shooting) is handled behind the scenes
@@ -191,7 +183,8 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			// Close the window. This causes the program to also terminate.
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
-
+		
+		//////// FPS CAMERA MOVEMENT ////////
 		//move forward
 		case GLFW_KEY_W:
 			c_moveDir = C_FORWARD;
@@ -210,6 +203,24 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		//strafe left
 		case GLFW_KEY_A:
 			c_moveDir = C_LEFT;
+			break;
+
+
+		//////// REFORMAT THE TERRAIN ////////
+			//TODO: make it procedurally change when the button is press (not just texture)
+		//grass
+		case GLFW_KEY_1:
+			terrainTextureController->setTextures(GRASS);
+			break;
+
+		//desert
+		case GLFW_KEY_2:
+			terrainTextureController->setTextures(DESERT);
+			break;
+
+		//snow
+		case GLFW_KEY_3:
+			terrainTextureController->setTextures(SNOW);
 			break;
 
 		default:

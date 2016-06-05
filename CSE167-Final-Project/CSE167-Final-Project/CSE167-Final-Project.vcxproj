@@ -167,6 +167,7 @@
     <ClInclude Include="..\shader.h" />
     <ClInclude Include="..\skybox.h" />
     <ClInclude Include="..\Terrain.h" />
+    <ClInclude Include="..\TerrainTextureController.h" />
     <ClInclude Include="..\Texture.h" />
     <ClInclude Include="..\Window.h" />
   </ItemGroup>
@@ -179,6 +180,7 @@
     <ClCompile Include="..\shader.cpp" />
     <ClCompile Include="..\skybox.cpp" />
     <ClCompile Include="..\Terrain.cpp" />
+    <ClCompile Include="..\TerrainTextureController.cpp" />
     <ClCompile Include="..\Texture.cpp" />
     <ClCompile Include="..\Window.cpp" />
   </ItemGroup>

@@ -81,6 +81,9 @@
     <ClInclude Include="..\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\TerrainTextureController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -111,6 +114,9 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Texture.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TerrainTextureController.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>

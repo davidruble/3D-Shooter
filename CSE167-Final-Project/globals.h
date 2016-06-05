@@ -54,6 +54,11 @@ namespace Global
 	const glm::vec3 terrainOffset = glm::vec3(-(glm::sqrt(T_SIZE) * T_SCALE_VAL - glm::sqrt(T_SIZE)) / 2.0f, -(T_MAX_HEIGHT + T_SCALE_VAL), -(glm::sqrt(T_SIZE) * T_SCALE_VAL - glm::sqrt(T_SIZE)) / 2.0f);
 	const float t_shineDamper = 1.0f;
 	const float t_reflectivity = 0.0f;
+
+	//terrain texture stuff
+	const char* const GRASS_LOW_IMG = "res/grass_low.png";
+	const char* const GRASS_MID_IMG = "res/grass_med.png";
+	const char* const GRASS_HIGH_IMG = "res/grass_high.png";
 };
 
 #endif

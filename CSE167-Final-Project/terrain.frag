@@ -4,16 +4,38 @@ in vec2 pass_texCoords;
 in vec3 surfaceNormal;
 in vec3 toLight;
 in vec3 toCamera;
+in float elevation;
 
 out vec4 color;
 
-uniform sampler2D modelTexture;
+uniform sampler2D highTexture;
+uniform sampler2D midTexture;
+uniform sampler2D lowTexture;
+
 uniform vec3 lightColor;
 uniform float shineDamper;
 uniform float reflectivity;
 
 void main()
 {
+	vec2 tiledCoords = pass_texCoords * 75.0;
+	vec4 highTexColor = texture(highTexture, tiledCoords);
+	vec4 midTexColor = texture(midTexture, tiledCoords);
+	vec4 lowTexColor = texture(lowTexture, tiledCoords);
+
+	//set the texture based on elevation
+	vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);
+	if (elevation <= -10.0)
+		finalColor += lowTexColor;
+	if (elevation >= -10.0 && elevation <= -9.5)
+		finalColor += (lowTexColor + midTexColor) / 2.0;
+	if (elevation >= -9.5 && elevation <= 1.0)
+		finalColor += midTexColor;
+	if (elevation >= 1.0 && elevation <= 1.8)
+		finalColor += (midTexColor + highTexColor) / 2.0;
+	if (elevation >= 1.8)
+		finalColor += highTexColor;
+
 	vec3 unitNormal = normalize(surfaceNormal);
 	vec3 unitLightVector = normalize(toLight);
 	
@@ -30,7 +52,5 @@ void main()
 	float dampedFactor = pow(specularFactor,shineDamper);
 	vec3 finalSpecular = dampedFactor * reflectivity * lightColor;
 	
-	color = vec4(diffuse,1.0) * texture(modelTexture, pass_texCoords) + vec4(finalSpecular,1.0);
-	
-	//color = texture(modelTexture, pass_texCoords);
+	color = vec4(diffuse,1.0) * finalColor + vec4(finalSpecular,1.0);
 }
