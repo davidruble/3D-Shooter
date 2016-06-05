@@ -4,20 +4,48 @@
 using Global::T_VERTEX_COUNT;
 using Global::T_SIZE;
 
-Terrain::Terrain()
+int T_IND_VERT_SIZE;
+int T_TEX_COORD_SIZE;
+int T_INDS_SIZE;
+
+Terrain::Terrain(bool useHeightmap, const char* heightmapImage)
 {
 	this->shaderProgram = Global::terrainShader->getProgram();
 	this->toWorld = glm::scale(Global::terrainScale);
 	this->toWorld = glm::translate(glm::mat4(1.0f), Global::terrainOffset);
 
-	//initialize the data buffers
-	int count = T_VERTEX_COUNT * T_VERTEX_COUNT;
-	this->vertices = new float[Global::T_IND_VERT_SIZE];
-	this->normals = new float[Global::T_IND_VERT_SIZE];
-	this->textureCoords = new float[Global::T_TEX_COORD_SIZE];
-	this->indices = new int[Global::T_INDS_SIZE];
+	//load the heightmap (if applicable)
+	if (useHeightmap)
+	{
+		heightmap = loadPPM(heightmapImage, heightmapWidth, heightmapHeight);
+		vertexCount = heightmapHeight;
 
-	generateTerrain();
+		//if image not loaded correctly, default to flat
+		if (heightmap == NULL)
+		{
+			std::cerr << "Defaulting to flat terrain" << std::endl;
+			vertexCount = Global::T_VERTEX_COUNT;
+			useHeightmap = false;
+		}
+	}
+	else
+	{
+		vertexCount = Global::T_VERTEX_COUNT;
+	}
+
+	//set the sizes of the buffers based on the vertex count
+	T_IND_VERT_SIZE = vertexCount * vertexCount * 3;
+	T_TEX_COORD_SIZE = vertexCount * vertexCount * 2;
+	T_INDS_SIZE = 6 * (vertexCount - 1) * (vertexCount - 1);
+
+	//initialize the data buffers
+	int count = vertexCount * vertexCount;
+	this->vertices = new float[T_IND_VERT_SIZE];
+	this->normals = new float[T_IND_VERT_SIZE];
+	this->textureCoords = new float[T_TEX_COORD_SIZE];
+	this->indices = new int[T_INDS_SIZE];
+
+	generateTerrain(useHeightmap);
 
 	//create the vertex buffers/arrays
 	glGenVertexArrays(1, &VAO);
@@ -31,25 +59,25 @@ Terrain::Terrain()
 		
 		//bind the indices buffer
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, inds_EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * Global::T_INDS_SIZE, indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * T_INDS_SIZE, indices, GL_STATIC_DRAW);
 
 		//bind the vertices buffer
 		glBindBuffer(GL_ARRAY_BUFFER, verts_VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * Global::T_IND_VERT_SIZE, vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * T_IND_VERT_SIZE, vertices, GL_STATIC_DRAW);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		//bind the texture coords buffer
 		glBindBuffer(GL_ARRAY_BUFFER, textCoords_VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoords) * Global::T_TEX_COORD_SIZE, textureCoords, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoords) * T_TEX_COORD_SIZE, textureCoords, GL_STATIC_DRAW);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		//bind the normals buffer
 		glBindBuffer(GL_ARRAY_BUFFER, norms_VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(normals) * Global::T_IND_VERT_SIZE, normals, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(normals) * T_IND_VERT_SIZE, normals, GL_STATIC_DRAW);
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 		glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -70,35 +98,37 @@ Terrain::~Terrain()
 	delete[] normals;
 }
 
-void Terrain::generateTerrain()
+void Terrain::generateTerrain(bool useHeightmap)
 {
 	//initialize the vertices, normals, and texture coords
 	int v = 0;
-	for (int i = 0; i < T_VERTEX_COUNT; ++i)
+	for (int i = 0; i < vertexCount; ++i)
 	{
-		for (int j = 0; j < T_VERTEX_COUNT; ++j)
+		for (int j = 0; j < vertexCount; ++j)
 		{
-			vertices[v * 3 + 0] = (float)j / ((float)T_VERTEX_COUNT - 1) * T_SIZE;
-			vertices[v * 3 + 1] = 0.0f;
-			vertices[v * 3 + 2] = (float)i / ((float)T_VERTEX_COUNT - 1) * T_SIZE;
+			vertices[v * 3 + 0] = (float)j / ((float)vertexCount - 1) * T_SIZE;
+			vertices[v * 3 + 1] = useHeightmap ? getImageHeight(j, i) : 0.0f;
+			//std::cerr << getImageHeight(j, i) << std::endl;
+			//vertices[v * 3 + 1] = rand() % 5;
+			vertices[v * 3 + 2] = (float)i / ((float)vertexCount - 1) * T_SIZE;
 			normals[v * 3 + 0] = 0.0f;
 			normals[v * 3 + 1] = 1.0f;
 			normals[v * 3 + 2] = 0.0f;
-			textureCoords[v * 2 + 0] = (float)j / ((float)T_VERTEX_COUNT - 1);
-			textureCoords[v * 2 + 1] = (float)i / ((float)T_VERTEX_COUNT - 1);
+			textureCoords[v * 2 + 0] = (float)j / ((float)vertexCount - 1);
+			textureCoords[v * 2 + 1] = (float)i / ((float)vertexCount - 1);
 			++v;
 		}
 	}
 
 	//initialize the indices
 	int ind = 0;
-	for (int gz = 0; gz < T_VERTEX_COUNT - 1; ++gz)
+	for (int gz = 0; gz < vertexCount - 1; ++gz)
 	{
-		for (int gx = 0; gx < T_VERTEX_COUNT - 1; ++gx)
+		for (int gx = 0; gx < vertexCount - 1; ++gx)
 		{
-			int topLeft = (gz * T_VERTEX_COUNT) + gx;
+			int topLeft = (gz * vertexCount) + gx;
 			int topRight = topLeft + 1;
-			int bottomLeft = ((gz + 1) * T_VERTEX_COUNT) + gx;
+			int bottomLeft = ((gz + 1) * vertexCount) + gx;
 			int bottomRight = bottomLeft + 1;
 			indices[ind++] = topLeft;
 			indices[ind++] = bottomLeft;
@@ -107,6 +137,43 @@ void Terrain::generateTerrain()
 			indices[ind++] = bottomLeft;
 			indices[ind++] = bottomRight;
 		}
+	}
+}
+
+//gets the height of the terrain at the x,z IMAGE coordinate
+float Terrain::getImageHeight(int x, int z)
+{
+	//make sure coords are not out of bounds
+	//if (x < 0 || x > heightmapHeight || z < 0 || z < heightmapHeight)
+	//{
+	//	std::cerr << "Out of bounds!" << std::endl;
+	//	return 0;
+	//}
+
+	float height = (float)getRGB(x, z);
+	//std::cerr << height << std::endl;
+	height += Global::T_MAX_PIXEL_COLOR / 2.0f;
+	height /= Global::T_MAX_PIXEL_COLOR / 2.0f;
+	height *= Global::T_MAX_HEIGHT;
+	return height;
+}
+
+//gets the RGB value as a single int at coordinate (x, z) of the IMAGE
+int Terrain::getRGB(int x, int z)
+{
+	if (heightmap == NULL)
+		return 0;
+	else
+	{
+		int index = z * heightmapWidth + x;
+		int r = heightmap[3 * index + 0];
+		int g = heightmap[3 * index + 1];
+		int b = heightmap[3 * index + 2];
+
+		int rgb = r;
+		rgb = (rgb << 8) + g;
+		rgb = (rgb << 8) + b;
+		return rgb;
 	}
 }
 
@@ -127,6 +194,6 @@ void Terrain::render(GLuint textureID)
 
 	//draw the terrain
 	glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, Global::T_INDS_SIZE, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, T_INDS_SIZE, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }

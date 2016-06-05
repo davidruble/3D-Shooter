@@ -63,9 +63,9 @@ void Window::initialize_objects()
 	skyboxShader = new Shader("../skybox.vert", "../skybox.frag");
 	skybox = new Skybox();
 
-	//load the terrain and shader
+	//load the terrain and shader, and set the terrain to initially use the SD heightmap
 	terrainShader = new Shader("../terrain.vert", "../terrain.frag");
-	terrain = new Terrain();
+	terrain = new Terrain(true, "res/SanDiegoTerrain.ppm");
 
 	//load the terrain texture
 	texture = new Texture("res/grass.png");

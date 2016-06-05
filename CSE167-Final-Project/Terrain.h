@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "globals.h"
+#include "ppmLoader.h"
 
 class Terrain
 {
@@ -19,6 +20,7 @@ private:
 
 	GLuint shaderProgram;
 
+	int vertexCount;
 	float* vertices;
 	float* normals;
 	float* textureCoords;
@@ -26,10 +28,16 @@ private:
 
 	glm::mat4 toWorld;
 
-	void generateTerrain();
+	int heightmapWidth;
+	int heightmapHeight;
+	unsigned char* heightmap;
+
+	void generateTerrain(bool useHeightmap);
+	float getImageHeight(int x, int z);
+	int getRGB(int x, int z);
 
 public:
-	Terrain();
+	Terrain(bool useHeightmap, const char* heightmapImage);
 	~Terrain();
 
 	void render(GLuint textureID);

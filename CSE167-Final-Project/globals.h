@@ -41,13 +41,13 @@ namespace Global
 	extern bool isFiring;
 
 	//terrain stuff
-	const float T_SIZE = 800.0f;
+	const float T_SIZE = 500.0f;
+	const float T_MAX_HEIGHT = 40.0f;
+	const float T_MAX_PIXEL_COLOR = 256.0f * 256.0f * 256.0f;
 	const int T_VERTEX_COUNT = 128;
-	const int T_IND_VERT_SIZE = T_VERTEX_COUNT * T_VERTEX_COUNT * 3;
-	const int T_TEX_COORD_SIZE = T_VERTEX_COUNT * T_VERTEX_COUNT * 2;
-	const int T_INDS_SIZE = 6 * (T_VERTEX_COUNT - 1) * (T_VERTEX_COUNT - 1);
-	const glm::vec3 terrainScale = glm::vec3(50.0f, 50.0f, 50.0f);
-	const glm::vec3 terrainOffset = glm::vec3(-T_SIZE + 50.0f, -1.0f, -T_SIZE + 50.0f);
+	const float T_SCALE_VAL = 20.0f;
+	const glm::vec3 terrainScale = glm::vec3(T_SCALE_VAL, T_SCALE_VAL, T_SCALE_VAL);
+	const glm::vec3 terrainOffset = glm::vec3(-(glm::sqrt(T_SIZE) * T_SCALE_VAL - glm::sqrt(T_SIZE)) / 2.0f, -(T_MAX_HEIGHT + T_SCALE_VAL), -(glm::sqrt(T_SIZE) * T_SCALE_VAL - glm::sqrt(T_SIZE)) / 2.0f);
 };
 
 #endif
