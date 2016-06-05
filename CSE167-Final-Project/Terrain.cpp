@@ -25,6 +25,7 @@ Terrain::Terrain(const char* heightmapImage)
 	this->shaderProgram = Global::terrainShader->getProgram();
 	this->toWorld = glm::scale(Global::terrainScale);
 	this->toWorld = glm::translate(glm::mat4(1.0f), Global::terrainOffset);
+	this->heights = vector<float>();
 
 	//load the heightmap
 	heightmap = loadPPM(heightmapImage, heightmapWidth, heightmapHeight);
@@ -119,6 +120,7 @@ void Terrain::generateTerrain()
 	this->normals = new float[T_IND_VERT_SIZE];
 	this->textureCoords = new float[T_TEX_COORD_SIZE];
 	this->indices = new int[T_INDS_SIZE];
+	this->heights.resize(vertexCount * vertexCount);
 
 	//initialize the vertices, normals, and texture coords
 	int v = 0;
@@ -127,9 +129,11 @@ void Terrain::generateTerrain()
 		for (int j = 0; j < vertexCount; ++j)
 		{
 			glm::vec3 normal = calculateNormal(j, i);
+			float height = getHeight(j, i);
+			heights[(j * vertexCount) + i] = height;
 
 			vertices[v * 3 + 0] = (float)j / ((float)vertexCount - 1) * T_SIZE;
-			vertices[v * 3 + 1] = getHeight(j, i);
+			vertices[v * 3 + 1] = height;
 			vertices[v * 3 + 2] = (float)i / ((float)vertexCount - 1) * T_SIZE;
 			normals[v * 3 + 0] = normal.x;
 			normals[v * 3 + 1] = normal.y;
@@ -158,6 +162,52 @@ void Terrain::generateTerrain()
 			indices[ind++] = bottomRight;
 		}
 	}
+}
+
+float Terrain::getHeightOfTerrain(float worldX, float worldZ)
+{
+	float terrainX = Global::T_TRANS_VAL - worldX;
+	float terrainZ = Global::T_TRANS_VAL - worldX;
+
+	//calculate the grid properties at worldX, worldY coord
+	float gridSquareSize = Global::T_SIZE / ((float)heights.size() - 1.0f);
+	int gridX = glm::floor(terrainX / gridSquareSize);
+	int gridZ = glm::floor(terrainZ / gridSquareSize);
+
+	//std::cerr << "World: " << worldX << ", " << worldZ << std::endl;
+	//std::cerr << "Terrain: " << terrainX << ", " << terrainZ << std::endl;
+	//std::cerr << "Grid: " << gridX << ", " << gridZ << std::endl;
+
+	if (gridX >= heights.size() - 2 || gridZ >= heights.size() - 2 || gridX < 0 || gridZ < 0)
+	{
+		//std::cerr << "Out of bounds!" << std::endl;
+		return 0.0f;
+	}
+
+	//get the x and z coordinate of this grid
+	float xCoord = fmod(terrainX, gridSquareSize) / gridSquareSize;
+	float zCoord = fmod(terrainZ, gridSquareSize) / gridSquareSize;
+
+	float answer;
+	
+	//player is in top triangle of this grid
+	if (xCoord <= (1.0f - zCoord))
+	{
+		answer = baryCentric(glm::vec3(0.0f, heights[(gridX * vertexCount) + gridZ], 0.0f), 
+			glm::vec3(1.0f, heights[(gridX + 1) * vertexCount + gridZ], 0.0f), 
+			glm::vec3(0.0f, heights[gridX * vertexCount + (gridZ + 1)], 1.0f),
+			glm::vec2(xCoord, zCoord));
+	}
+
+	//player is in the bottom triangle of this grid
+	else
+	{
+		answer = baryCentric(glm::vec3(1.0f, heights[(gridX + 1) * vertexCount + gridZ], 0.0f), 
+			glm::vec3(1.0f, heights[(gridX + 1) * vertexCount + (gridZ + 1)], 1.0f), 
+			glm::vec3(0.0f, heights[gridX * vertexCount + (gridZ + 1)], 1.0f),
+			glm::vec2(xCoord, zCoord));
+	}
+	return answer;
 }
 
 //calculates the new normal for the new height of the terrain at IMAGE position x,z
@@ -214,6 +264,16 @@ int Terrain::getRGB(int x, int z)
 		rgb = (rgb << 8) + b;
 		return rgb;
 	}
+}
+
+//find the height of the point pos in the triangle defined by p1, p2, p3
+float Terrain::baryCentric(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec2 pos)
+{
+	float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
+	float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
+	float l2 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det;
+	float l3 = 1.0f - l1 - l2;
+	return l1 * p1.y + l2 * p2.y + l3 * p3.y;
 }
 
 void Terrain::render()

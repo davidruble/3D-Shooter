@@ -18,6 +18,7 @@ namespace Global
 	const float MOVE_SPEED = 4.0f;
 	const float LOOK_SPEED = 0.003f;
 	const float VERTICAL_CLAMP = 0.9f;
+	const float GRAVITY = -9.8f;
 
 	//properties for objects in scene -- chrome
 	const glm::vec3 objAmbient = glm::vec3(0.25f, 0.25f, 0.25f);
@@ -40,7 +41,7 @@ namespace Global
 	const glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	//terrain stuff
-	const float T_SIZE = 150.0f;
+	const float T_SIZE = 200.0f;
 	const float T_MAX_HEIGHT = 40.0f;
 	const float T_MAX_PIXEL_COLOR = 256.0f * 256.0f * 256.0f;
 	const int T_VERTEX_COUNT = 128;
@@ -55,7 +56,12 @@ namespace Global
 	const char* const GRASS_LOW_IMG = "res/grass_low.png";
 	const char* const GRASS_MID_IMG = "res/grass_med.png";
 	const char* const GRASS_HIGH_IMG = "res/grass_high.png";
-	//TODO: other textures
+	const char* const DESERT_LOW_IMG = "res/desert_low.png";
+	const char* const DESERT_MID_IMG = "res/desert_med.png";
+	const char* const DESERT_HIGH_IMG = "res/desert_high.png";
+	const char* const SNOW_LOW_IMG = "res/snow_low.png";
+	const char* const SNOW_MID_IMG = "res/snow_med.png";
+	const char* const SNOW_HIGH_IMG = "res/snow_high.png";
 
 	//terrain height generator stuff
 	extern bool useHeightmap;
@@ -65,7 +71,7 @@ namespace Global
 
 	//initial camera properties
 	const float EYE_Z_DIST = 30.0f;
-	const glm::vec3 cam_pos_init(T_TRANS_VAL / 2.0f, 0.0f, T_TRANS_VAL / 2.0f);// e  | Position of camera
+	const glm::vec3 cam_pos_init(0.0f, 0.0f, 0.0f);		// e  | Position of camera
 	const glm::vec3 cam_look_at_init(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
 	const glm::vec3 cam_up_init(0.0f, 1.0f, 0.0f);		// up | What orientation "up" is
 };

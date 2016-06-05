@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "globals.h"
+#include "objects.h"
 
 #include <iostream>
 
@@ -20,6 +21,19 @@ Camera::~Camera()
 
 void Camera::update(CamMoveDir moveDir, float &horizAngle, float &vertAngle, float deltaTime)
 {
+	//check for terrain collision
+	float terrainHeight = Global::terrain->getHeightOfTerrain(this->e.x, this->e.z);
+	if (this->e.y <= terrainHeight)
+	{
+		//don't go any lower than the terrain
+		this->e.y += terrainHeight;
+	}
+	else
+	{
+		//fall with gravity
+		this->e.y += Global::GRAVITY * deltaTime;
+	}
+
 	//clamp the vertical looking angle
 	if (vertAngle > Global::VERTICAL_CLAMP)
 		vertAngle = Global::VERTICAL_CLAMP;
@@ -76,7 +90,7 @@ void Camera::move(CamMoveDir moveDir, float deltaTime)
 	default:
 		return;
 	}
-	
+
 	//update the camera's view
 	this->view = glm::lookAt(e, e + d, up);
 }

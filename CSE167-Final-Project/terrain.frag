@@ -29,10 +29,10 @@ void main()
 		finalColor += lowTexColor;
 	if (elevation >= -10.0 && elevation <= -9.5)
 		finalColor += (lowTexColor + midTexColor) / 2.0;
-	if (elevation >= -9.5 && elevation <= 1.0)
+	if (elevation >= -9.5 && elevation <= 1.8)
 		finalColor += midTexColor;
-	if (elevation >= 1.0 && elevation <= 1.8)
-		finalColor += (midTexColor + highTexColor) / 2.0;
+	//if (elevation >= 1.0 && elevation <= 1.8)
+	//	finalColor += (midTexColor + highTexColor) / 2.0;
 	if (elevation >= 1.8)
 		finalColor += highTexColor;
 
