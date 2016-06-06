@@ -19,6 +19,8 @@ namespace Global
 	const float LOOK_SPEED = 0.003f;
 	const float VERTICAL_CLAMP = 0.9f;
 	const float GRAVITY = -9.8f;
+	const float CAM_Y_OFFSET = 2.0f;
+	const float CAM_LOWER_BOUND = -20.0f;
 
 	//properties for objects in scene -- chrome
 	const glm::vec3 objAmbient = glm::vec3(0.25f, 0.25f, 0.25f);

@@ -167,26 +167,31 @@ void Terrain::generateTerrain()
 float Terrain::getHeightOfTerrain(float worldX, float worldZ)
 {
 	float terrainX = Global::T_TRANS_VAL - worldX;
-	float terrainZ = Global::T_TRANS_VAL - worldX;
+	float terrainZ = Global::T_TRANS_VAL - worldZ;
+	//float terrainX = worldX + Global::T_TRANS_VAL;
+	//float terrainZ = worldZ + Global::T_TRANS_VAL;
 
 	//calculate the grid properties at worldX, worldY coord
 	float gridSquareSize = Global::T_SIZE / ((float)heights.size() - 1.0f);
-	int gridX = glm::floor(terrainX / gridSquareSize);
-	int gridZ = glm::floor(terrainZ / gridSquareSize);
+	//float gridSquareSize = vertexCount * vertexCount / ((float)heights.size() - 1.0f);
+	int gridZ = -glm::floor(terrainX * gridSquareSize);
+	int gridX = -glm::floor(terrainZ * gridSquareSize);
 
 	//std::cerr << "World: " << worldX << ", " << worldZ << std::endl;
 	//std::cerr << "Terrain: " << terrainX << ", " << terrainZ << std::endl;
 	//std::cerr << "Grid: " << gridX << ", " << gridZ << std::endl;
+	//std::cerr << "Camera: " << Global::camera->getPos().y << std::endl;
+	//std::cerr << "Grid size: " << gridSquareSize << std::endl;
 
-	if (gridX >= heights.size() - 2 || gridZ >= heights.size() - 2 || gridX < 0 || gridZ < 0)
+	if (gridX >= heights.size() - 2 || gridZ >= heights.size() - 2 || gridX - 1 < 0 || gridZ - 1 < 0)
 	{
 		//std::cerr << "Out of bounds!" << std::endl;
 		return 0.0f;
 	}
 
 	//get the x and z coordinate of this grid
-	float xCoord = fmod(terrainX, gridSquareSize) / gridSquareSize;
-	float zCoord = fmod(terrainZ, gridSquareSize) / gridSquareSize;
+	float xCoord = fmod(terrainX, 1.0f - gridSquareSize) * gridSquareSize;
+	float zCoord = fmod(terrainZ, 1.0f - gridSquareSize) * gridSquareSize;
 
 	float answer;
 	
@@ -207,7 +212,7 @@ float Terrain::getHeightOfTerrain(float worldX, float worldZ)
 			glm::vec3(0.0f, heights[gridX * vertexCount + (gridZ + 1)], 1.0f),
 			glm::vec2(xCoord, zCoord));
 	}
-	return answer;
+	return answer - (Global::T_MAX_HEIGHT + Global::T_SCALE_VAL);
 }
 
 //calculates the new normal for the new height of the terrain at IMAGE position x,z

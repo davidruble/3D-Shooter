@@ -22,17 +22,17 @@ Camera::~Camera()
 void Camera::update(CamMoveDir moveDir, float &horizAngle, float &vertAngle, float deltaTime)
 {
 	//check for terrain collision
-	float terrainHeight = Global::terrain->getHeightOfTerrain(this->e.x, this->e.z);
+	/*float terrainHeight = Global::terrain->getHeightOfTerrain(this->e.x, this->e.z);
 	if (this->e.y <= terrainHeight)
 	{
 		//don't go any lower than the terrain
-		this->e.y += terrainHeight;
+		this->e.y = terrainHeight + Global::CAM_Y_OFFSET;
 	}
 	else
 	{
 		//fall with gravity
 		this->e.y += Global::GRAVITY * deltaTime;
-	}
+	}*/
 
 	//clamp the vertical looking angle
 	if (vertAngle > Global::VERTICAL_CLAMP)
@@ -66,30 +66,40 @@ void Camera::move(CamMoveDir moveDir, float deltaTime)
 	//move forward
 	case C_FORWARD:
 		this->e.x += glm::normalize(this->d).x * deltaTime * Global::MOVE_SPEED;
+		this->e.y += glm::normalize(this->d).y * deltaTime * Global::MOVE_SPEED;
 		this->e.z += glm::normalize(this->d).z * deltaTime * Global::MOVE_SPEED;
 		break;
 
 	//move backwards
 	case C_BACKWARD:
 		this->e.x -= glm::normalize(this->d).x * deltaTime * Global::MOVE_SPEED;
+		this->e.y -= glm::normalize(this->d).y * deltaTime * Global::MOVE_SPEED;
 		this->e.z -= glm::normalize(this->d).z * deltaTime * Global::MOVE_SPEED;
 		break;
 
 	//strafe right
 	case C_RIGHT:
 		this->e.x += glm::normalize(this->right).x * deltaTime * Global::MOVE_SPEED;
+		this->e.y += glm::normalize(this->right).y * deltaTime * Global::MOVE_SPEED;
 		this->e.z += glm::normalize(this->right).z * deltaTime * Global::MOVE_SPEED;
 		break;
 
 	//strafe left
 	case C_LEFT:
 		this->e.x -= glm::normalize(this->right).x * deltaTime * Global::MOVE_SPEED;
+		this->e.y -= glm::normalize(this->right).y * deltaTime * Global::MOVE_SPEED;
 		this->e.z -= glm::normalize(this->right).z * deltaTime * Global::MOVE_SPEED;
 		break;
 
 	default:
 		return;
 	}
+
+	//restrict the y pposition of the free roaming camera
+	if (e.y > Global::T_MAX_HEIGHT - Global::CAM_Y_OFFSET)
+		e.y = Global::T_MAX_HEIGHT - Global::CAM_Y_OFFSET;
+	else if (e.y < Global::CAM_LOWER_BOUND + Global::CAM_Y_OFFSET)
+		e.y = Global::CAM_LOWER_BOUND + Global::CAM_Y_OFFSET;
 
 	//update the camera's view
 	this->view = glm::lookAt(e, e + d, up);
