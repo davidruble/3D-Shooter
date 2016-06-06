@@ -26,7 +26,20 @@ void Texture::generateTexture(const char* filename)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.0f);
+
+	//use anisotropic filtering, if available
+	float amount = 0.0f;
+	if (GLEW_EXT_texture_filter_anisotropic)
+	{
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &amount);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+	}
+	else
+	{
+		std::cerr << "Anisotropoic filtering not supported" << std::endl;
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f);
+	}
 	
 	//load the image and bind it to this texture
 	unsigned char* image = SOIL_load_image(filename, &width, &height, 0, SOIL_LOAD_RGB);

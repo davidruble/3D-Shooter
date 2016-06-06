@@ -71,6 +71,7 @@ void Window::clean_up()
 	delete(terrain);
 	delete(terrainShader);
 	delete(sun);
+	delete(camera);
 }
 
 GLFWwindow* Window::create_window(int width, int height)
