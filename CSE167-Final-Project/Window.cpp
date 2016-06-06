@@ -39,6 +39,20 @@ double currentTime = 0.0;
 //keep rendering more particles when true, let old ones die out when false
 bool Global::isFiring = false;
 
+//Change type to whatever is the type of object that is checking for collision
+struct rndObject {
+	int xmin;
+	int xmax;
+	int ymin;
+	int ymax;
+	int zmin;
+	int zmax;
+
+	glm::mat4 toWorld;
+	bool colliding;
+};
+vector<rndObject> collidingObjects;
+
 glm::vec3 Global::skyColor = glm::vec3(0.5f, 0.5f, 0.5f);
 
 void Window::initialize_objects()
@@ -140,6 +154,71 @@ void Window::idle_callback()
 
 	//store the last frame time
 	lastTime = currentTime;
+	
+	//Check for any Collisions
+	collisionCheck();
+}
+
+int GetIntersection(float fDst1, float fDst2, glm::vec3 P1, glm::vec3 P2, glm::vec3 &Hit) {
+	if ((fDst1 * fDst2) >= 0.0f) return 0;
+	if (fDst1 == fDst2) return 0;
+	Hit = P1 + (P2 - P1) * (-fDst1 / (fDst2 - fDst1));
+	return 1;
+}
+
+int InBox(glm::vec3 Hit, glm::vec3 B1, glm::vec3 B2, const int Axis) {
+	if (Axis == 1 && Hit.z > B1.z && Hit.z < B2.z && Hit.y > B1.y && Hit.y < B2.y) return 1;
+	if (Axis == 2 && Hit.z > B1.z && Hit.z < B2.z && Hit.x > B1.x && Hit.x < B2.x) return 1;
+	if (Axis == 3 && Hit.x > B1.x && Hit.x < B2.x && Hit.y > B1.y && Hit.y < B2.y) return 1;
+	return 0;
+}
+
+void Window::collisionCheck() {
+	glm::vec3 start = camera->getPos();
+	//Mutliply "camera->getDir to get a longer linesegment.
+	glm::vec3 finish = camera->getDir() + camera->getPos();
+
+	for (int i = 0; i < collidingObjects.size(); i++) {
+
+		//Start and end points of the line segment in box space
+		glm::vec3 L1 = glm::vec3(glm::inverse(collidingObjects[i].toWorld) * glm::vec4(start, 1));
+		glm::vec3 L2 = glm::vec3(glm::inverse(collidingObjects[i].toWorld) * glm::vec4(finish, 1));
+
+		//Two vec3s that define the bounding box
+		glm::vec3 B1 = glm::vec3(collidingObjects[i].xmin, collidingObjects[i].ymin, collidingObjects[i].zmin);
+		glm::vec3 B2 = glm::vec3(collidingObjects[i].xmax, collidingObjects[i].ymax, collidingObjects[i].zmax);
+
+		//Intersection point
+		glm::vec3 Hit;
+
+		//Checks if the line falls outside of the bounding box
+		if (L2.x < B1.x && L1.x < B1.x) collidingObjects[i].colliding = false;
+		if (L2.x > B2.x && L1.x > B2.x) collidingObjects[i].colliding = false;
+		if (L2.y < B1.y && L1.y < B1.y) collidingObjects[i].colliding = false;
+		if (L2.y > B2.y && L1.y > B2.y) collidingObjects[i].colliding = false;
+		if (L2.z < B1.z && L1.z < B1.z) collidingObjects[i].colliding = false;
+		if (L2.z > B2.z && L1.z > B2.z) collidingObjects[i].colliding = false;
+
+		//Checks if the start point is inside of the bounding box
+		if (L1.x > B1.x && L1.x < B2.x &&
+			L1.y > B1.y && L1.y < B2.y &&
+			L1.z > B1.z && L1.z < B2.z)
+		{
+			Hit = L1;
+			collidingObjects[i].colliding = true;
+		}
+
+		//Finds the point of intersection
+		if ((GetIntersection(L1.x - B1.x, L2.x - B1.x, L1, L2, Hit) && InBox(Hit, B1, B2, 1))
+			|| (GetIntersection(L1.y - B1.y, L2.y - B1.y, L1, L2, Hit) && InBox(Hit, B1, B2, 2))
+			|| (GetIntersection(L1.z - B1.z, L2.z - B1.z, L1, L2, Hit) && InBox(Hit, B1, B2, 3))
+			|| (GetIntersection(L1.x - B2.x, L2.x - B2.x, L1, L2, Hit) && InBox(Hit, B1, B2, 1))
+			|| (GetIntersection(L1.y - B2.y, L2.y - B2.y, L1, L2, Hit) && InBox(Hit, B1, B2, 2))
+			|| (GetIntersection(L1.z - B2.z, L2.z - B2.z, L1, L2, Hit) && InBox(Hit, B1, B2, 3)))
+			collidingObjects[i].colliding = true;
+
+		collidingObjects[i].colliding = false;
+	}
 }
 
 void Window::display_callback(GLFWwindow* window)
