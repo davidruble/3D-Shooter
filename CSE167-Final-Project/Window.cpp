@@ -39,6 +39,8 @@ double currentTime = 0.0;
 //keep rendering more particles when true, let old ones die out when false
 bool Global::isFiring = false;
 
+glm::vec3 Global::skyColor = glm::vec3(0.5f, 0.5f, 0.5f);
+
 void Window::initialize_objects()
 {
 	//initialize the particle system and shader

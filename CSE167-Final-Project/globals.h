@@ -42,6 +42,11 @@ namespace Global
 	const glm::vec3 lightPosition = glm::vec3(-100000.0f, 200000.0f, 0.0f);
 	const glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
+	//fog properties
+	extern glm::vec3 skyColor;
+	const float fogDensity = 0.01;
+	const float fogGradient = 2.5f;
+
 	//terrain stuff
 	const float T_SIZE = 200.0f;
 	const float T_MAX_HEIGHT = 40.0f;

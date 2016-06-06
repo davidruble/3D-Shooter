@@ -134,6 +134,14 @@ void Skybox::draw(GLuint shaderProgram)
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]); 
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, &Window::P[0][0]);
 
+	//supply the shader with fog stuff
+	GLuint skyColorLoc = glGetUniformLocation(shaderProgram, "skyColor");
+	GLuint fogDensityLoc = glGetUniformLocation(shaderProgram, "fogDensity");
+	GLuint fogGradientLoc = glGetUniformLocation(shaderProgram, "fogGradient");
+	glUniform3fv(skyColorLoc, 1, &Global::skyColor[0]);
+	glUniform1f(fogDensityLoc, Global::fogDensity);
+	glUniform1f(fogGradientLoc, Global::fogGradient);
+
 	glDepthMask(GL_FALSE);
 	glCullFace(GL_FRONT);
 

@@ -95,7 +95,7 @@ void Camera::move(CamMoveDir moveDir, float deltaTime)
 		return;
 	}
 
-	//restrict the y pposition of the free roaming camera
+	//restrict the y position of the free roaming camera
 	if (e.y > Global::T_MAX_HEIGHT - Global::CAM_Y_OFFSET)
 		e.y = Global::T_MAX_HEIGHT - Global::CAM_Y_OFFSET;
 	else if (e.y < Global::CAM_LOWER_BOUND + Global::CAM_Y_OFFSET)

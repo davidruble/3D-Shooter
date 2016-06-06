@@ -301,6 +301,14 @@ void Terrain::render()
 	glUniform1f(shineDamperLoc, Global::t_shineDamper);
 	glUniform1f(reflectivityLoc, Global::t_reflectivity);
 
+	//supply the shader with fog stuff
+	GLuint skyColorLoc = glGetUniformLocation(shaderProgram, "skyColor");
+	GLuint fogDensityLoc = glGetUniformLocation(shaderProgram, "fogDensity");
+	GLuint fogGradientLoc = glGetUniformLocation(shaderProgram, "fogGradient");
+	glUniform3fv(skyColorLoc, 1, &Global::skyColor[0]);
+	glUniform1f(fogDensityLoc, Global::fogDensity);
+	glUniform1f(fogGradientLoc, Global::fogGradient);
+
 	//bind the textures
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, Global::terrainTextureController->getLowID());

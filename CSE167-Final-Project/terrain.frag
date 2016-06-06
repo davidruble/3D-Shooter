@@ -5,6 +5,7 @@ in vec3 surfaceNormal;
 in vec3 toLight;
 in vec3 toCamera;
 in float elevation;
+in float visibility;
 
 out vec4 color;
 
@@ -15,6 +16,7 @@ uniform sampler2D lowTexture;
 uniform vec3 lightColor;
 uniform float shineDamper;
 uniform float reflectivity;
+uniform vec3 skyColor;
 
 void main()
 {
@@ -34,7 +36,7 @@ void main()
 	//if (elevation >= 1.0 && elevation <= 1.8)
 	//	finalColor += (midTexColor + highTexColor) / 2.0;
 	if (elevation >= 1.8)
-		finalColor += highTexColor;
+		finalColor += highTexColor + 0.2 * midTexColor;
 
 	vec3 unitNormal = normalize(surfaceNormal);
 	vec3 unitLightVector = normalize(toLight);
@@ -53,4 +55,5 @@ void main()
 	vec3 finalSpecular = dampedFactor * reflectivity * lightColor;
 	
 	color = vec4(diffuse,1.0) * finalColor + vec4(finalSpecular,1.0);
+	color = mix(vec4(skyColor, 1.0), color, visibility);
 }
