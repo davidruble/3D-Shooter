@@ -4,12 +4,14 @@ in vec3 toLight;
 in vec3 toCamera;
 in float elevation;
 in float visibility;
+in vec3 TexCoords;
 
 out vec4 color;
 
 uniform vec3 lightColor;
 uniform float shineDamper;
 uniform float reflectivity;
+uniform samplerCube smile;
 
 void main()
 {             
@@ -32,6 +34,11 @@ void main()
 	
 	color = vec4(diffuse,1.0) * finalColor + vec4(finalSpecular,1.0);
 	color = mix(vec4(1, 0, 0, 1.0), color, visibility);
+
+	vec3 I = normalize(toCamera);
+	vec3 R = reflect(I, unitNormal);
+	color = texture(smile, R);
+	//color = vec4(1, 1, 0, 1);
 
 	float edge = max(0, dot(unitNormal, toCamera));
 		if( edge < 0.5f){
