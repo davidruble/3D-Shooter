@@ -1,0 +1,14 @@
+﻿  Window.cpp
+c:\users\kraken lmk2\desktop\3d-shooter-master\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  skybox.cpp
+  main.cpp
+  Terrain.cpp
+  ParticleSystem.cpp
+  Cube.cpp
+  Camera.cpp
+Texture.obj : error LNK2019: unresolved external symbol SOIL_load_image referenced in function "private: void __cdecl Texture::generateTexture(char const *)" (?generateTexture@Texture@@AEAAXPEBD@Z)
+Texture.obj : error LNK2019: unresolved external symbol SOIL_free_image_data referenced in function "private: void __cdecl Texture::generateTexture(char const *)" (?generateTexture@Texture@@AEAAXPEBD@Z)
+C:\Users\Kraken LMK2\Desktop\3D-Shooter-master\CSE167-Final-Project\\packages\SOIL\lib\SOIL.lib : warning LNK4272: library machine type 'X86' conflicts with target machine type 'x64'
+C:\Users\Kraken LMK2\Desktop\3D-Shooter-master\CSE167-Final-Project\x64\Debug\CSE167-Final-Project.exe : fatal error LNK1120: 2 unresolved externals

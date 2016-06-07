@@ -94,6 +94,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)\packages\SOIL\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -122,6 +123,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)\packages\SOIL\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -151,10 +153,14 @@
   <ItemGroup>
     <None Include="..\basicShader.frag" />
     <None Include="..\basicShader.vert" />
+    <None Include="..\line.frag" />
+    <None Include="..\line.vert" />
     <None Include="..\particle.frag" />
     <None Include="..\particle.vert" />
     <None Include="..\skybox.frag" />
     <None Include="..\skybox.vert" />
+    <None Include="..\targetShader.frag" />
+    <None Include="..\targetShader.vert" />
     <None Include="..\terrain.frag" />
     <None Include="..\terrain.vert" />
     <None Include="packages.config" />
@@ -170,6 +176,8 @@
     <ClInclude Include="..\ppmLoader.h" />
     <ClInclude Include="..\shader.h" />
     <ClInclude Include="..\skybox.h" />
+    <ClInclude Include="..\straight.h" />
+    <ClInclude Include="..\Target.h" />
     <ClInclude Include="..\Terrain.h" />
     <ClInclude Include="..\TerrainHeightGenerator.h" />
     <ClInclude Include="..\TerrainTextureController.h" />
@@ -184,6 +192,8 @@
     <ClCompile Include="..\ppmLoader.cpp" />
     <ClCompile Include="..\shader.cpp" />
     <ClCompile Include="..\skybox.cpp" />
+    <ClCompile Include="..\straight.cpp" />
+    <ClCompile Include="..\Target.cpp" />
     <ClCompile Include="..\Terrain.cpp" />
     <ClCompile Include="..\TerrainHeightGenerator.cpp" />
     <ClCompile Include="..\TerrainTextureController.cpp" />

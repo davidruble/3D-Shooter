@@ -11,6 +11,7 @@
 #include "Window.h"
 #include "shader.h"
 #include "globals.h"
+#include "straight.h"
 
 class Target {
 public:
@@ -19,6 +20,21 @@ public:
 	std::vector<glm::vec3> normals;
 
 	GLuint VBO, VAO, EBO, NBO;
+
+	glm::vec3 hit;
+
+	Straight* wOne;
+	Straight* wTwo;
+	Straight* wThree;
+	Straight* wFour;
+	Straight* wFive;
+	Straight* wSix;
+	Straight* wSeven;
+	Straight* wEight;
+	Straight* wNine;
+	Straight* wTen;
+	Straight* wEleven;
+	Straight* wTwelve;
 
 	Target();
 	~Target();
@@ -38,7 +54,6 @@ public:
 
 	Shader* shader;
 	Shader* boxShader;
-
 
 	void draw();
 	void parse();

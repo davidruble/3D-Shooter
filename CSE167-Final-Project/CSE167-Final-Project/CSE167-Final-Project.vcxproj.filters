@@ -40,6 +40,18 @@
     <None Include="..\terrain.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\targetShader.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\targetShader.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\line.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\line.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.h">
@@ -87,6 +99,12 @@
     <ClInclude Include="..\TerrainHeightGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Target.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\straight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -123,6 +141,12 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="..\TerrainHeightGenerator.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Target.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\straight.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
