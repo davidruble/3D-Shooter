@@ -49,6 +49,7 @@ Target::Target() {
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
 
 	glGenTextures(1, &textID);
+	glActiveTexture(GL_TEXTURE0);
 
 	int width = 10;
 	int height = 10;
@@ -196,6 +197,7 @@ void Target::draw() {
 		glUniform1f(reflectivityLoc, Global::t_reflectivity);
 
 		glUniform1i(glGetUniformLocation(shaderProgram, "smile"), 0);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textID);
 
 		// Make sure no bytes are padded:
