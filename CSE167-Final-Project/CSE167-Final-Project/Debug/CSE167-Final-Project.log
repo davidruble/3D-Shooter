@@ -1,4 +1,4 @@
 ﻿  Target.cpp
-c:\users\kraken lmk2\desktop\3d-shooter-master\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\kraken lmk2\desktop\3d-shooter-master\cse167-final-project\target.cpp(147): warning C4018: '<': signed/unsigned mismatch
-  CSE167-Final-Project.vcxproj -> C:\Users\Kraken LMK2\Desktop\3D-Shooter-master\CSE167-Final-Project\Debug\CSE167-Final-Project.exe
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\target.cpp(148): warning C4018: '<': signed/unsigned mismatch
+  CSE167-Final-Project.vcxproj -> C:\Users\Kraken LMK2\Documents\School\Spring16\CS167Final\CSE167-Final-Project\Debug\CSE167-Final-Project.exe

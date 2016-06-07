@@ -12,6 +12,7 @@ uniform vec3 lightColor;
 uniform float shineDamper;
 uniform float reflectivity;
 uniform samplerCube smile;
+uniform float glow;
 
 void main()
 {             
@@ -41,7 +42,11 @@ void main()
 	//color = vec4(1, 1, 0, 1);
 
 	float edge = max(0, dot(unitNormal, toCamera));
-		if( edge < 0.5f){
-	color = vec4(0, 0, 1, edge);
+	if( edge < 0.7f){
+		if(glow != 0){
+			color = vec4(0, 0, 1, edge);
+		} else {
+			color = vec4(0,0,0,0);
+		}
 	}
 }

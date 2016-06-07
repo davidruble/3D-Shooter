@@ -11,6 +11,7 @@ Target::Target() {
 	colliding = false;
 	alive = true;
 	showBounding = true;
+	glowing = 1.0f;
 
 	toWorld = glm::mat4();
 
@@ -56,9 +57,8 @@ Target::Target() {
 
 	//glBindTexture(GL_TEXTURE_2D, textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textID);
-	printf("yellow plz\n");
 	unsigned char * image;
-	image = loadPPM("../yellow.ppm", width, height);
+	image = loadPPM("../face.ppm", width, height);
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	image = loadPPM("../yellow.ppm", width, height);
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
@@ -196,6 +196,12 @@ void Target::draw() {
 		glUniform1f(shineDamperLoc, Global::t_shineDamper);
 		glUniform1f(reflectivityLoc, Global::t_reflectivity);
 
+		float glowOn = 0.0f;
+		if (glowing != 0 && colliding)
+			glowOn = 1.0f;
+		GLuint glowingLoc = glGetUniformLocation(shaderProgram, "glow");
+		glUniform1f(glowingLoc, glowOn);
+
 		glUniform1i(glGetUniformLocation(shaderProgram, "smile"), 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textID);
@@ -248,7 +254,6 @@ void Target::draw() {
 
 			if (colliding && Global::isFiring) {
 
-				printf("hit: %f, %f, %f\n", hit[0], hit[1], hit[2]);
 
 				//Right
 				if (hit.x == xmax) {

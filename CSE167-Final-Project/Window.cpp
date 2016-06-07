@@ -42,6 +42,7 @@ bool Global::isFiring = false;
 //Show wireframes on collision objects;
 int showWires;
 int demoMode;
+bool spin;
 
 vector<Target*> collidingObjects;
 
@@ -151,6 +152,9 @@ void Window::idle_callback()
 	//controlling the camera
 	camera->update(c_moveDir, horizAngle, vertAngle, deltaTime);
 
+	if (spin) {
+		//horizAngle += 4 * Global::LOOK_SPEED;
+	}
 	//store the last frame time
 	lastTime = currentTime;
 	
@@ -331,6 +335,28 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		//Have objects not die on hit
 		case GLFW_KEY_G:
 			demoMode *= -1;
+			break;
+
+		//Toggle glow
+		case GLFW_KEY_I:
+			for (int i = 0; i < collidingObjects.size(); i++) {
+				if (collidingObjects[i]->glowing != 0.0f) {
+					collidingObjects[i]->glowing = 0.0f;
+				}
+				else {
+					collidingObjects[i]->glowing = 1.0f;
+				}
+			}
+			break;
+
+		//Reset
+		case GLFW_KEY_R:
+			for (int i = 0; i < collidingObjects.size(); i++)
+				collidingObjects[i]->alive = true;
+			break;
+
+		case GLFW_KEY_P:
+			spin = true;
 			break;
 
 		//////// REFORMAT THE TERRAIN ////////

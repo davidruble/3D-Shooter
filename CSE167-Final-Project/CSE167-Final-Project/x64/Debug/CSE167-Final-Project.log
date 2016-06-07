@@ -1,14 +1,45 @@
 ﻿  Window.cpp
-c:\users\kraken lmk2\desktop\3d-shooter-master\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  skybox.cpp
-  main.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\texture.h(5): fatal error C1083: Cannot open include file: 'SOIL.h': No such file or directory
+  Texture.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\texture.h(5): fatal error C1083: Cannot open include file: 'SOIL.h': No such file or directory
+  TerrainTextureController.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\texture.h(5): fatal error C1083: Cannot open include file: 'SOIL.h': No such file or directory
+  TerrainHeightGenerator.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\terrainheightgenerator.cpp(13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\terrainheightgenerator.cpp(26): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\terrainheightgenerator.cpp(27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\terrainheightgenerator.cpp(28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\terrainheightgenerator.cpp(29): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\terrainheightgenerator.cpp(53): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\terrainheightgenerator.cpp(60): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\terrainheightgenerator.cpp(66): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   Terrain.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\texture.h(5): fatal error C1083: Cannot open include file: 'SOIL.h': No such file or directory
+  Target.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\texture.h(5): fatal error C1083: Cannot open include file: 'SOIL.h': No such file or directory
+  straight.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\texture.h(5): fatal error C1083: Cannot open include file: 'SOIL.h': No such file or directory
+  skybox.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\texture.h(5): fatal error C1083: Cannot open include file: 'SOIL.h': No such file or directory
+  shader.cpp
+  ppmLoader.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\ppmloader.cpp(48): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
   ParticleSystem.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\texture.h(5): fatal error C1083: Cannot open include file: 'SOIL.h': No such file or directory
+  main.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
   Cube.cpp
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\texture.h(5): fatal error C1083: Cannot open include file: 'SOIL.h': No such file or directory
   Camera.cpp
-Texture.obj : error LNK2019: unresolved external symbol SOIL_load_image referenced in function "private: void __cdecl Texture::generateTexture(char const *)" (?generateTexture@Texture@@AEAAXPEBD@Z)
-Texture.obj : error LNK2019: unresolved external symbol SOIL_free_image_data referenced in function "private: void __cdecl Texture::generateTexture(char const *)" (?generateTexture@Texture@@AEAAXPEBD@Z)
-C:\Users\Kraken LMK2\Desktop\3D-Shooter-master\CSE167-Final-Project\\packages\SOIL\lib\SOIL.lib : warning LNK4272: library machine type 'X86' conflicts with target machine type 'x64'
-C:\Users\Kraken LMK2\Desktop\3D-Shooter-master\CSE167-Final-Project\x64\Debug\CSE167-Final-Project.exe : fatal error LNK1120: 2 unresolved externals
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\globals.h(47): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\kraken lmk2\documents\school\spring16\cs167final\cse167-final-project\texture.h(5): fatal error C1083: Cannot open include file: 'SOIL.h': No such file or directory
+  Generating Code...

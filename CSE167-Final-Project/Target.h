@@ -51,6 +51,7 @@ public:
 	bool colliding;
 	bool alive;
 	bool showBounding;
+	float glowing;
 
 	Shader* shader;
 	Shader* boxShader;
