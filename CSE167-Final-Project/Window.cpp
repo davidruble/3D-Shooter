@@ -144,7 +144,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 }
 
 void Window::idle_callback()
-{	
+{
 	//compute the time difference between the current and last frame
 	currentTime = glfwGetTime();
 	deltaTime = float(currentTime - lastTime);
@@ -157,7 +157,7 @@ void Window::idle_callback()
 	}
 	//store the last frame time
 	lastTime = currentTime;
-	
+
 	//Check for any Collisions
 	collisionCheck();
 
@@ -187,11 +187,12 @@ int InBox(glm::vec3 Hit, glm::vec3 B1, glm::vec3 B2, const int Axis) {
 }
 
 void Window::collisionCheck() {
-
+	//The core of the collisionCheck is used from "http://www.3dkingdoms.com/weekly/weekly.php?a=3" with some modifications
 	glm::vec3 start = camera->getPos();
 	int maxLength = 16;
 
 	for (int i = 0; i < collidingObjects.size(); i++) {
+		//Gradually grows the line so we hit the right side of the object
 		for (int j = 0; j < maxLength; j++) {
 
 			glm::vec3 finish = (float)j * (camera->getDir()) + camera->getPos();
@@ -296,7 +297,7 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 {
 	// Check for a key press
 	if (action == GLFW_PRESS || action == GLFW_REPEAT)
-	{		
+	{
 		//determine what key was pressed
 		switch (key)
 		{
@@ -304,7 +305,7 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			// Close the window. This causes the program to also terminate.
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
-		
+
 		//////// FPS CAMERA MOVEMENT ////////
 		//move forward
 		case GLFW_KEY_W:
