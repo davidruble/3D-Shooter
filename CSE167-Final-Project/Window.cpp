@@ -1,7 +1,7 @@
 #include "window.h"
 #include "globals.h"
 #include "objects.h"
-
+#include "Target.h"
 #include "Cube.h"
 
 using Global::skybox;
@@ -39,19 +39,7 @@ double currentTime = 0.0;
 //keep rendering more particles when true, let old ones die out when false
 bool Global::isFiring = false;
 
-//Change type to whatever is the type of object that is checking for collision
-struct rndObject {
-	int xmin;
-	int xmax;
-	int ymin;
-	int ymax;
-	int zmin;
-	int zmax;
-
-	glm::mat4 toWorld;
-	bool colliding;
-};
-vector<rndObject> collidingObjects;
+vector<Target*> collidingObjects;
 
 glm::vec3 Global::skyColor = glm::vec3(0.5f, 0.5f, 0.5f);
 
@@ -74,6 +62,10 @@ void Window::initialize_objects()
 
 	//initialize the player camera
 	camera = new Camera(Global::cam_pos_init, Global::cam_look_at_init, Global::cam_up_init);
+
+	//Add Targets
+	Target* targ = new Target();
+	collidingObjects.push_back(targ);
 }
 
 void Window::clean_up()
@@ -181,23 +173,23 @@ void Window::collisionCheck() {
 	for (int i = 0; i < collidingObjects.size(); i++) {
 
 		//Start and end points of the line segment in box space
-		glm::vec3 L1 = glm::vec3(glm::inverse(collidingObjects[i].toWorld) * glm::vec4(start, 1));
-		glm::vec3 L2 = glm::vec3(glm::inverse(collidingObjects[i].toWorld) * glm::vec4(finish, 1));
+		glm::vec3 L1 = glm::vec3(glm::inverse(collidingObjects[i]->toWorld) * glm::vec4(start, 1));
+		glm::vec3 L2 = glm::vec3(glm::inverse(collidingObjects[i]->toWorld) * glm::vec4(finish, 1));
 
 		//Two vec3s that define the bounding box
-		glm::vec3 B1 = glm::vec3(collidingObjects[i].xmin, collidingObjects[i].ymin, collidingObjects[i].zmin);
-		glm::vec3 B2 = glm::vec3(collidingObjects[i].xmax, collidingObjects[i].ymax, collidingObjects[i].zmax);
+		glm::vec3 B1 = glm::vec3(collidingObjects[i]->xmin, collidingObjects[i]->ymin, collidingObjects[i]->zmin);
+		glm::vec3 B2 = glm::vec3(collidingObjects[i]->xmax, collidingObjects[i]->ymax, collidingObjects[i]->zmax);
 
 		//Intersection point
 		glm::vec3 Hit;
 
 		//Checks if the line falls outside of the bounding box
-		if (L2.x < B1.x && L1.x < B1.x) collidingObjects[i].colliding = false;
-		if (L2.x > B2.x && L1.x > B2.x) collidingObjects[i].colliding = false;
-		if (L2.y < B1.y && L1.y < B1.y) collidingObjects[i].colliding = false;
-		if (L2.y > B2.y && L1.y > B2.y) collidingObjects[i].colliding = false;
-		if (L2.z < B1.z && L1.z < B1.z) collidingObjects[i].colliding = false;
-		if (L2.z > B2.z && L1.z > B2.z) collidingObjects[i].colliding = false;
+		if (L2.x < B1.x && L1.x < B1.x) collidingObjects[i]->colliding = false;
+		if (L2.x > B2.x && L1.x > B2.x) collidingObjects[i]->colliding = false;
+		if (L2.y < B1.y && L1.y < B1.y) collidingObjects[i]->colliding = false;
+		if (L2.y > B2.y && L1.y > B2.y) collidingObjects[i]->colliding = false;
+		if (L2.z < B1.z && L1.z < B1.z) collidingObjects[i]->colliding = false;
+		if (L2.z > B2.z && L1.z > B2.z) collidingObjects[i]->colliding = false;
 
 		//Checks if the start point is inside of the bounding box
 		if (L1.x > B1.x && L1.x < B2.x &&
@@ -205,7 +197,7 @@ void Window::collisionCheck() {
 			L1.z > B1.z && L1.z < B2.z)
 		{
 			Hit = L1;
-			collidingObjects[i].colliding = true;
+			collidingObjects[i]->colliding = true;
 		}
 
 		//Finds the point of intersection
@@ -215,9 +207,9 @@ void Window::collisionCheck() {
 			|| (GetIntersection(L1.x - B2.x, L2.x - B2.x, L1, L2, Hit) && InBox(Hit, B1, B2, 1))
 			|| (GetIntersection(L1.y - B2.y, L2.y - B2.y, L1, L2, Hit) && InBox(Hit, B1, B2, 2))
 			|| (GetIntersection(L1.z - B2.z, L2.z - B2.z, L1, L2, Hit) && InBox(Hit, B1, B2, 3)))
-			collidingObjects[i].colliding = true;
+			collidingObjects[i]->colliding = true;
 
-		collidingObjects[i].colliding = false;
+		collidingObjects[i]->colliding = false;
 	}
 }
 
@@ -238,6 +230,11 @@ void Window::display_callback(GLFWwindow* window)
 	//whether or not to actually render particles (i.e. when shooting) is handled behind the scenes
 	particleShader->use();
 	particleSystem->render(Global::camera->getPos() + Global::camOffset, Global::camera->getDir());
+
+	//render the Targets
+	for (int i = 0; i < collidingObjects.size(); i++) {
+		collidingObjects[i]->draw();
+	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
